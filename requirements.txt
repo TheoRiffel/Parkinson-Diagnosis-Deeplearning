@@ -1,3 +1,4 @@
+python==3.9
 pandas
 numpy
 matplotlib
@@ -5,5 +6,5 @@ scikit-learn
 tqdm
 gensim==3.8.3
 node2vec
-dtw
-python==3.9
+fastdtw
+scipy==1.10.1
