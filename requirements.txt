@@ -1,10 +1,13 @@
-python==3.9
-pandas
+# python==3.9
 numpy
+pandas
+networkx
 matplotlib
 scikit-learn
 tqdm
 gensim==3.8.3
 node2vec
 fastdtw
-scipy==1.10.1
+scipy==1.11.3
+pytz
+python-dateutil
