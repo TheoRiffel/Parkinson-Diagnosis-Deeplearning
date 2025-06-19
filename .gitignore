@@ -1,3 +1,4 @@
 data/Controls_columns/
 data/PDs_columns/
-code/__pycache__/
+**/__pycache__/
+Parkinson_Diagnosis_Deeplearning.egg-info/
