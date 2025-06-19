@@ -87,7 +87,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
     }
 
 def train(model, train_loader, val_loader, class_weights, device):
-    optimizer = torch.optim.Adam(model.parameters(),lr=0.0001, betas=(0.9,0.999), eps=1e-8, weight_decay=0.1)
+    optimizer = torch.optim.Adam(model.parameters(),lr=0.0001, betas=(0.9,0.999), eps=1e-8, weight_decay=0.01)
     criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 
     train_metrics = train_model(model, train_loader, val_loader, criterion, optimizer,
@@ -108,11 +108,11 @@ def evaluate(model, test_loader, device):
             x, y = x.to(device), y.to(device)
             out = model(x)
             preds = out.argmax(1)
-            all_preds.extend(preds.cpu().numpy())
+            all_preds.extend([int(p) for p in preds.cpu().numpy()])
             all_labels.extend(y.cpu().numpy())
 
-    print(all_preds)
-
+    print('Preds:', all_preds)
+    
     return {
         'acc': accuracy_score(all_labels, all_preds),
         'f1':  f1_score(all_labels, all_preds, average='weighted'),

@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     #-------------------------------- TRAINING --------------------------------#
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = SimpleMLP(input_dim=X_train.shape[1], hidden_dim=64, output_dim=2)
+    model = SimpleMLP(input_dim=X_train.shape[1], hidden_dim=16, output_dim=2)
     class_weights = get_class_weights(y_train)
 
     start = time.time()
@@ -39,6 +39,6 @@ if __name__ == '__main__':
     metrics = evaluate(model, test_loader, device)
     elapsed = time.time() - start
 
-    print(metrics)
-    print(elapsed)
-    print("Done.")
+    print('Metrics:', metrics)
+    print('Time elapsed:', elapsed)
+    print('Done.')
