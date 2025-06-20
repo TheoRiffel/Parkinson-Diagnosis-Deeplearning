@@ -17,6 +17,7 @@ bibliography: [refs.bib]
 \tableofcontents
 
 # Introdução 
+Intro [@nobody06].
 
 # Referências #
 ::: {#refs}
