@@ -87,8 +87,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
         'epoch_end': final_epoch
     }
 
-def train(model, train_loader, val_loader, class_weights, device, num_epochs, patience, lr):
-    optimizer = torch.optim.Adam(model.parameters(),lr=lr, betas=(0.9,0.999), eps=1e-8, weight_decay=0.1)
+def train(model, train_loader, val_loader, class_weights, device, num_epochs, patience, lr, decay=0.1):
+    optimizer = torch.optim.Adam(model.parameters(),lr=lr, betas=(0.9,0.999), eps=1e-8, weight_decay=decay)
     criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 
     train_metrics = train_model(model, train_loader, val_loader, criterion, optimizer,
