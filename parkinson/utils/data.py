@@ -47,10 +47,8 @@ def concatenate_data(
     return data
 
 def filter_data(X: np.array, y: np.array) -> tuple[np.array, np.array]:
-    """Remove data samples with NaN"""
-    notna_indices = np.logical_not(np.isnan(X).any(axis=1))
-    X = X[notna_indices]
-    y = y[notna_indices]
+    """Substitui NaNs por 0 nas séries"""
+    X = np.nan_to_num(X, nan=0.0)
     return X, y
 
 def get_torch_class_weights(y: np.ndarray) -> torch.Tensor:

@@ -35,8 +35,6 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
             optimizer.zero_grad()
             out = model(x)
             loss = criterion(out, y)
-            print(loss)
-
             loss.backward()
             optimizer.step()
 
@@ -99,13 +97,13 @@ def train(model, train_loader, val_loader, class_weights, device):
     train_metrics = train_model(model, train_loader, val_loader, criterion, optimizer,
                                 num_epochs=N_EPOCHS,
                                 patience=PATIENCE,
-                                path2bestmodel=f"weights/",
+                                path2bestmodel=f"../weights/",
                                 device=device)
     
     return train_metrics
 
 def evaluate(model, test_loader, device):
-    model.load_state_dict(torch.load("weights/best_model.pth", map_location=device))
+    model.load_state_dict(torch.load("../weights/best_model.pth", map_location=device))
     model.eval()
 
     all_preds, all_labels = [], []
