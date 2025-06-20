@@ -6,10 +6,6 @@ import torch.nn as nn
 from tqdm import tqdm
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 
-N_EPOCHS = 200
-PATIENCE = 20
-LR = 0.0001
-
 def train_model(model, train_loader, val_loader, criterion, optimizer,
                num_epochs, patience, path2bestmodel, device):
     """Treina só no train_loader, salva o modelo de menor train-loss, sem early stopping."""
@@ -91,13 +87,13 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
         'epoch_end': final_epoch
     }
 
-def train(model, train_loader, val_loader, class_weights, device):
-    optimizer = torch.optim.Adam(model.parameters(),lr=LR, betas=(0.9,0.999), eps=1e-8, weight_decay=0.1)
+def train(model, train_loader, val_loader, class_weights, device, num_epochs, patience, lr):
+    optimizer = torch.optim.Adam(model.parameters(),lr=lr, betas=(0.9,0.999), eps=1e-8, weight_decay=0.1)
     criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 
     train_metrics = train_model(model, train_loader, val_loader, criterion, optimizer,
-                                num_epochs=N_EPOCHS,
-                                patience=PATIENCE,
+                                num_epochs=num_epochs,
+                                patience=patience,
                                 path2bestmodel=f"../weights/",
                                 device=device)
     
