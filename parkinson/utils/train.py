@@ -1,8 +1,10 @@
 import torch
-import torch.nn as nn
-from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 import os
+
+import torch.nn as nn
+
 from tqdm import tqdm
+from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 
 N_EPOCHS = 200
 PATIENCE = 20
@@ -19,7 +21,9 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
     patience_counter = 0
     final_epoch = 0
 
-    for epoch in tqdm(range(1, num_epochs+1), desc="Epoch"):
+    epoch_progress_bar = tqdm(range(1, num_epochs+1), desc="Epoch")
+
+    for epoch in epoch_progress_bar:
 
         # Treinamento
         model.train()
@@ -31,6 +35,8 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
             optimizer.zero_grad()
             out = model(x)
             loss = criterion(out, y)
+            print(loss)
+
             loss.backward()
             optimizer.step()
 
@@ -67,17 +73,17 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
         if val_avg_loss < best_val_loss:
             best_val_loss = val_avg_loss
             patience_counter = 0
-            torch.save(model.state_dict(), f"{path2bestmodel}/best_model.pth")
             final_epoch = epoch
         else:
             patience_counter += 1
 
-        print(f"[{epoch}/{num_epochs}] train-loss: {avg_loss:.4f}  train-acc: {acc:.4f} | val-loss: {val_avg_loss:.4f}  val-acc: {val_acc:.4f}")
+        epoch_progress_bar.set_description(f"train-loss: {avg_loss:.4f}  train-acc: {acc:.4f} | val-loss: {val_avg_loss:.4f}  val-acc: {val_acc:.4f}")
 
         if patience_counter >= patience:
             print(f"Early stopping at epoch {epoch}")
             break
 
+    torch.save(model.state_dict(), f"{path2bestmodel}/best_model.pth")
     return {
         'train_loss': train_losses,
         'train_acc': train_accs,

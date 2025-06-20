@@ -10,7 +10,8 @@ classifiers = [
 ]
 
 [tool.setuptools]
-py-modules = ['parkinson']
+packages = ["parkinson", "parkinson.utils", "parkinson.NetworkModels"]
+
 
 [project.urls]
 Homepage = "https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning"

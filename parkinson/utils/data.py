@@ -10,6 +10,7 @@ from torch.utils.data import TensorDataset, DataLoader
 avaiable_atlas = ['Shen_268', 'atlas', 'AAL3']
 
 def batch_read(path: str) -> list[pd.DataFrame]:
+    """Read .csv timeseries from folder"""
     df_list = []
     for file in tqdm(os.listdir(path)):
         df = pd.read_csv(f'{path}/{file}')
@@ -20,6 +21,7 @@ def select_atlas_columns(
         data: list[pd.DataFrame],
         atlas_name: str
     ) -> list[pd.DataFrame]:
+    """Select atlas columns from df"""
 
     if atlas_name not in avaiable_atlas:
         raise ValueError(f'Invalid atlas name {atlas_name}. Use {avaiable_atlas}')
@@ -35,6 +37,7 @@ def concatenate_data(
         data1: list[np.array],
         data2: list[np.array]
     ) -> np.array:
+    """Stack two lists[np.array]"""
     
     data = np.concatenate([
         data1,
@@ -43,14 +46,16 @@ def concatenate_data(
 
     return data
 
-def filter_data(data: np.array) -> np.array:
-    notna_indices = np.logical_not(np.isnan(data).any(axis=1))
-    data = data[notna_indices]
-    return data
+def filter_data(X: np.array, y: np.array) -> tuple[np.array, np.array]:
+    """Remove data samples with NaN"""
+    notna_indices = np.logical_not(np.isnan(X).any(axis=1))
+    X = X[notna_indices]
+    y = y[notna_indices]
+    return X, y
 
-def get_torch_class_weights(y_train: np.ndarray) -> torch.Tensor:
-    classes = np.unique(y_train)
-    class_counts = np.array([(y_train == c).sum() for c in classes])
+def get_torch_class_weights(y: np.ndarray) -> torch.Tensor:
+    classes = np.unique(y)
+    class_counts = np.array([(y == c).sum() for c in classes])
     weights = 1. / class_counts
     weights = weights / weights.sum() * len(classes)
     return torch.tensor(weights, dtype=torch.float32)
@@ -60,8 +65,9 @@ def get_torch_dataloader(
         y: np.ndarray,
         batch_size: int = 32,
         shuffle: bool = True,
-        num_workers: int = 16
+        num_workers: int = 4
     ) -> DataLoader:
+    """"Get torch dataloader"""
     
     X_tensor = torch.tensor(X, dtype=torch.float32)
     y_tensor = torch.tensor(y, dtype=torch.long)
