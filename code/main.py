@@ -18,7 +18,7 @@ if __name__ == '__main__':
     control_data = batch_read('data/Controls_columns')
     parkinson_selected_data, control_selected_data = select_atlas_type(parkinson_data, control_data, 'AAL3')
 
-    upper_triangular_indices = np.triu_indices(166)
+    upper_triangular_indices = np.triu_indices(parkinson_selected_data[0].shape[1])
     parkinson_correlation_matrix = [time_series.corr().to_numpy()[upper_triangular_indices] for time_series in parkinson_selected_data]
     control_correlation_matrix = [time_series.corr().to_numpy()[upper_triangular_indices] for time_series in control_selected_data]
 

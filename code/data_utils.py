@@ -17,6 +17,9 @@ def batch_read(path: str) -> list[pd.DataFrame]:
 def select_atlas_type(parkinson_data: list[pd.DataFrame],
                     control_data: list[pd.DataFrame],
                     atlas_name: str) -> tuple[list[pd.DataFrame], list[pd.DataFrame]]:
+    '''
+    Shen_268, atlas, AAL3
+    '''
     
     all_columns = parkinson_data[0].columns
     selected_columns = all_columns[np.where([column.split('.')[0] == atlas_name for column in all_columns])[0]]
