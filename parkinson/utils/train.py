@@ -13,8 +13,10 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
     model.to(device).train()
 
     best_val_loss = float('inf')
-    train_losses = val_losses = []
-    train_accs = val_accs = []
+    train_losses = []
+    val_losses = []
+    train_accs = []
+    val_accs = []
     patience_counter = 0
     final_epoch = 0
 
