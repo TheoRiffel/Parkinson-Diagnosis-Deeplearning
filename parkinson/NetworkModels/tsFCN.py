@@ -8,10 +8,11 @@ class tsFCN(nn.Module):
     self.block1 = nn.Sequential(
         nn.Conv1d(in_channels=input_channels, 
                   out_channels=128,
-                  kernel_size=32, 
+                  kernel_size=64, 
                   padding='same'),  
         nn.BatchNorm1d(128),  
-        nn.ReLU()
+        nn.ReLU(),
+        nn.Dropout(0.5)
     )
     
     self.block2 = nn.Sequential(
@@ -19,6 +20,7 @@ class tsFCN(nn.Module):
                   out_channels=256, 
                   kernel_size=16,
                   padding='same'),  
+        nn.BatchNorm1d(256),  
         nn.ReLU(),
         nn.Dropout(0.5)
     )
@@ -26,10 +28,11 @@ class tsFCN(nn.Module):
     self.block3 = nn.Sequential(
         nn.Conv1d(in_channels=256, 
                   out_channels=128, 
-                  kernel_size=8,
+                  kernel_size=16,
                   padding='same'),  
         nn.BatchNorm1d(128),  
-        nn.ReLU()
+        nn.ReLU(),
+        nn.Dropout(0.5)
     )
     
     self.fc = nn.Sequential(
