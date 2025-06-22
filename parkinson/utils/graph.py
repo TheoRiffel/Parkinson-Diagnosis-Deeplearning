@@ -5,6 +5,7 @@ from scipy.signal import csd, welch
 
 from fastdtw import fastdtw
 from tqdm import tqdm
+from pathlib import Path
 
 import pickle
 import os
@@ -31,7 +32,7 @@ def min_max_normalize(arr):
         return np.zeros_like(arr)
     return (arr - arr_min) / (arr_max - arr_min)
 
-# até onde eu sei essa função não tá sendo usada
+# até onde eu sei essa função não tá sendo usada: não ta
 def dtw_distance(time_series1: np.array, time_series2: np.array) -> float:
     distance, _ = fastdtw(time_series1.reshape(-1, 1), time_series2.reshape(-1, 1), dist=euclidean)
     return distance
@@ -195,24 +196,25 @@ def compute_correlation_matrix(
     time_series_list,
     method='dtw',
     group='parkinson',  # 'parkinson' ou 'control'
+    n_jobs: int = 6
 ):
     """
     Calcula a matriz de correlação para uma lista de séries temporais.
     method: 'pearson' ou 'dtw'
     group: 'parkinson' ou 'control' (usado para definir o cache_path do DTW)
     """
+    root = Path(__file__).parent.parent.parent
+
     if method == 'pearson':
         return [ts.corr(method='pearson').to_numpy()[np.triu_indices(ts.shape[1])] for ts in time_series_list]
     elif method == 'dtw':
         sys.path.append('/')
-        cache_dir = os.path.join(os.path.dirname(__file__), 'cache')
+        cache_dir = os.path.join(root, 'data/dtw_matrix')
         os.makedirs(cache_dir, exist_ok=True)
         if group == 'parkinson':
             cache_path = os.path.join(cache_dir, 'cache_dtw_parkinson_final.pkl')
-            n_jobs = 6
         elif group == 'control':
             cache_path = os.path.join(cache_dir, 'cache_dtw_control_final.pkl')
-            n_jobs = 6
         else:
             raise ValueError("group deve ser 'parkinson' ou 'control'")
         dtw_matrices = compute_all_dtw_matrices(time_series_list, cache_path, n_jobs=n_jobs)
@@ -221,7 +223,7 @@ def compute_correlation_matrix(
         return [ts.corr(method='spearman').to_numpy()[np.triu_indices(ts.shape[1])] for ts in time_series_list]
     elif method == 'icoh':
         sys.path.append('/')
-        cache_dir = os.path.join(os.path.dirname(__file__), 'cache')
+        cache_dir = os.path.join(root, 'data/iCOH_matrix')
         os.makedirs(cache_dir, exist_ok=True)
         if group == 'parkinson':
             cache_path = os.path.join(cache_dir, 'cache_icoh_parkinson_final.pkl')
