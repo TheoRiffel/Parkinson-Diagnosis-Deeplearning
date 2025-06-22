@@ -117,6 +117,8 @@ def evaluate(model, test_loader, device):
     print('Preds:', all_preds)
     
     return {
+        'preds': all_preds,
+        'labels': all_labels,
         'acc': accuracy_score(all_labels, all_preds),
         'f1':  f1_score(all_labels, all_preds, average='weighted'),
         'recall':  recall_score(all_labels, all_preds, average='weighted'),

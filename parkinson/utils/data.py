@@ -1,3 +1,4 @@
+from typing import Optional
 import torch
 import os
 
@@ -35,14 +36,18 @@ def select_atlas_columns(
 
 def concatenate_data(
         data1: list[np.array],
-        data2: list[np.array]
+        data2: list[np.array],
+        data3: list[np.array] = None
     ) -> np.array:
     """Stack two lists[np.array]"""
     
     data = np.concatenate([
         data1,
-        data2
+        data2,
     ], axis=0)
+
+    if data3 is not None:
+        data = np.concatenate([data, data3], axis=0)
 
     return data
 
