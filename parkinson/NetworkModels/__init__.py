@@ -1,3 +1,2 @@
 from .simpleMLP import SimpleMLP
-from .tsMLP import tsMLP
-from .tsFCN import tsFCN
+from .customFCN import customFCN
