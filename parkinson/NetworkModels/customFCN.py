@@ -1,10 +1,10 @@
 import torch.nn as nn
 from torch.nn.functional import avg_pool1d
 
-class tsFCN(nn.Module):
+class customFCN(nn.Module):
   def __init__(self, input_channels, n_classes):
     
-    super(tsFCN, self).__init__()
+    super(customFCN, self).__init__()
     self.block1 = nn.Sequential(
         nn.Conv1d(in_channels=input_channels, 
                   out_channels=128,
