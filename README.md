@@ -27,11 +27,11 @@ Contamos com dados de 66 pacientes saudáveis (Control), 153 pacientes com Parki
 
 Veremos no diretório Notebooks:
 
-* ** 0_correlation_matrix.ipynb: ** Modelo Baseline. Consiste em uma Shallow Network MLP (Multilayer Perceptron) básica.
-* ** 2_pytorch.ipynb: ** Rede Neural mais apurada. Contem normalizador Dropout, separação treino/validação/teste, a ajuste fino dos hiperparâmetros.
-* ** 3_pure_timeseries.ipynb: ** Consiste na aplicação de uma MLP diretamente nas séries temporais BOLD das ROI's.
-* ** 4_multiclassifier.ipynb: ** Modelo multiclassificador entre as 3 classes de pacientes. 
-* ** 5_GNN.ipynb: ** Aplicação de GNN (Graph Neural Network).
+* **0_correlation_matrix.ipynb:** Modelo Baseline. Consiste em uma Shallow Network MLP (Multilayer Perceptron) básica.
+* **2_pytorch.ipynb:** Rede Neural mais apurada. Contem normalizador Dropout, separação treino/validação/teste, a ajuste fino dos hiperparâmetros.
+* **3_pure_timeseries.ipynb:** Consiste na aplicação de uma MLP diretamente nas séries temporais BOLD das ROI's.
+* **4_multiclassifier.ipynb:** Modelo multiclassificador entre as 3 classes de pacientes. 
+* **5_GNN.ipynb:** Aplicação de GNN (Graph Neural Network).
 
 ## Resultados
 
