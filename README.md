@@ -9,6 +9,8 @@ Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes
 #TODO
     @frois explicar o trem do conda do pacote parkinson
     @todos botar os resultados de cada notebook na sessão Resultados
+    @todos mudar os nomes do notebooks para os finais
+    @todos ver se funciona o tutorial de instalação
 
 ## Sobre o Projeto:
 
