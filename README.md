@@ -3,7 +3,8 @@
 Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes Neurais e Aprendizado Profundo (2025)
 
 ### Alunos:
-    Théo Bruno Frey Riffel 12547812
+    Gabriel da Costa Merlin - 12544420
+    Théo Bruno Frey Riffel - 12547812
     
 #TODO
     @frois explicar o trem do conda do pacote parkinson
