@@ -89,9 +89,14 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
         'epoch_end': final_epoch
     }
 
-def train(model, train_loader, val_loader, class_weights, device, num_epochs, patience, lr, decay=0.1):
+def train(model, train_loader, val_loader, device, num_epochs, patience, lr, decay=0.1,  class_weights = None):
+
     optimizer = torch.optim.Adam(model.parameters(),lr=lr, betas=(0.9,0.999), eps=1e-8, weight_decay=decay)
-    criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
+    
+    if class_weights == None:
+        criterion = nn.CrossEntropyLoss()
+    else:
+        criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 
     train_metrics = train_model(model, train_loader, val_loader, criterion, optimizer,
                                 num_epochs=num_epochs,
@@ -113,14 +118,12 @@ def evaluate(model, test_loader, device):
             preds = out.argmax(1)
             all_preds.extend([int(p) for p in preds.cpu().numpy()])
             all_labels.extend(y.cpu().numpy())
-
-    print('Preds:', all_preds)
     
     return {
         'preds': all_preds,
         'labels': all_labels,
         'acc': accuracy_score(all_labels, all_preds),
         'f1':  f1_score(all_labels, all_preds, average='weighted'),
-        'recall':  recall_score(all_labels, all_preds, average='weighted'),
-        'precision': precision_score(all_labels, all_preds, average='weighted')
+        'precision': precision_score(all_labels, all_preds, average='weighted'),
+        'recall':  recall_score(all_labels, all_preds, average='weighted')
     }

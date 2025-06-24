@@ -78,3 +78,16 @@ def get_torch_dataloader(
     loader = DataLoader(dataset, batch_size, shuffle=True, num_workers=num_workers)
 
     return loader
+
+def df_to_timeseries(data_df):
+    aux_list = []
+
+    for idx_person in range(len(data_df)):
+        person_ts = []
+
+        for idx_region in range(len(data_df[idx_person].columns)):
+            person_ts.append(list(data_df[idx_person].iloc[:,idx_region]))
+
+        aux_list.append(person_ts)
+
+    return aux_list
