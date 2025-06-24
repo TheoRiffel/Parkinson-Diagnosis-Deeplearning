@@ -1,8 +1,8 @@
 import torch.nn as nn
 
-class SimpleMLP(nn.Module):
+class customMLP(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim):
-        super(SimpleMLP, self).__init__()
+        super(customMLP, self).__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, hidden_dim),
             nn.ReLU(),
