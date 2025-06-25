@@ -108,6 +108,7 @@ def train(
         num_epochs: int = 200,
         patience: int = 20,
         lr: float = 0.0001,
+        path = None,
         decay=0.1,
         class_weights: list[float] = None
     ):
@@ -127,14 +128,14 @@ def train(
         optimizer=optimizer,
         num_epochs=num_epochs,
         patience=patience,
-        path2bestmodel=f"../weights/",
+        path2bestmodel=path,
         device=device
     )
     
     return train_metrics
 
-def evaluate(model: torch.nn.Module, test_loader: torch.utils.data.DataLoader, device: torch.device):
-    model.load_state_dict(torch.load("../weights/best_model.pth", map_location=device))
+def evaluate(model: torch.nn.Module, test_loader: torch.utils.data.DataLoader, device: torch.device, path: str):
+    model.load_state_dict(torch.load( f"{path}/best_model.pth", map_location=device))
     model.eval()
 
     all_preds, all_labels = [], []
