@@ -20,10 +20,11 @@ cd Parkinson-Diagnosis-Deeplearning
 ### Baixando os dados:
 Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
 
-### Criando o ambiente virtual `parkinson` e instalando dependências:
+### Criando o ambiente virtual `t1_rnap_parkinson` e instalando dependências:
 ``` bash
-make create-env
-make module # cria o pacote parkinson
+conda env create -f environment.yaml
+conda activate t1_rnap_parkinson
+pip install -e . # cria o pacote parkinson
 ```
 
 Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
@@ -50,80 +51,10 @@ A matriz simétrica $A_{N \times N}$ recebe o nome de **Matriz de Conectividade*
 
 Assim, cada notebook explora uma abordagem para identificação da doença de Parkinson a partir da Matriz de Conectividade e estão disponíveis no diretório `notebooks`.
 
-* **[1_correlation_matrix.ipynb](notebooks/1_correlation_matrix.ipynb):** é proposta uma baseline para a tarefa. Para isso, uma rede neural foi treinada diretamente sobre a triangular superior da matriz de correlação. Foram exploradas diversas métricas para a construção da matriz. A rede escolhida foi uma MLP simples, com Dropout e uma camada oculta.
-* **[2_time_series.ipynb](notebooks/2_time_series.ipynb):** esse notebook explora uma abordagem sem a matriz de conectividade. É esperado um desempenho pior, dado as hipóteses de conectividade. Efetivamente, a Fully Convolutional Network treinada diretamente nas séries temporais das Regiões de Interesse não consegue aprender os padrões da doença de Parkinson.
-* **[3_gnn.ipynb](notebooks/3_gnn.ipynb):** para aumentar a acurácia na tarefa de classificação, é aplicado um modelo mais robusto para identificação de doenças através da conectividade, inspirado em estudos com dados similares em outras doenças ([ The Combination of a Graph Neural Network Technique and Brain Imaging to Diagnose Neurological Disorders: A Review and Outlook ](https://pubmed.ncbi.nlm.nih.gov/37891830/)). Para tanto, é construído um grafo robusto com Spanning Trees. Os vértices são caracterizados utilizando a correlação e GNNs são aplicadas para classificação. 
-
-## Análise dos métodos
-
-### Notebook 1: 1_correlation_matrix.ipynb (Matriz de Correlação + MLP)
-Este notebook aborda o problema de classificação usando uma abordagem baseada em conectividade funcional dinâmica.
-
-1. Metodologia:
-
-Extração de Características: A principal característica extraída das séries temporais de fMRI é a matriz de correlação funcional. O método sliding_window_correlation (correlação com janela deslizante) é utilizado, o que captura a natureza dinâmica da conectividade cerebral ao longo do tempo, em vez de uma correlação estática única.
-
-Modelo: As matrizes de correlação são então "achatadas" (vetorizadas) e usadas como entrada para um MLP (Multi-Layer Perceptron), uma rede neural totalmente conectada padrão.
-
-Tratamento de Dados: O desbalanceamento de classes é tratado usando RandomOverSampler, que replica aleatoriamente amostras da classe minoritária no conjunto de treinamento.
-
-2. Resultados:
-
-Acurácia: 77,27%
-
-F1-Score: 71,75%
-
-Precisão: 82,82%
-
-Recall: 77,27%
-
-### Notebook 2: 2_time_series.ipynb
-
-Este notebook tenta classificar os pacientes usando diretamente os dados de séries temporais, uma abordagem de ponta a ponta ("end-to-end").
-
-1. Metodologia:
-
-Extração de Características: Nenhuma característica complexa é pré-calculada. O modelo utiliza as séries temporais brutas de cada ROI (Região de Interesse) do cérebro como entrada.
-
-Modelo: É utilizada uma FCN (Fully Convolutional Network), que é um tipo de Rede Neural Convolucional (CNN) 1D, adequada para extrair padrões diretamente de dados sequenciais como séries temporais.
-
-Tratamento de Dados: O desbalanceamento de classes no conjunto de treinamento é tratado com a técnica SMOTE (Synthetic Minority Over-sampling Technique), que cria amostras sintéticas da classe minoritária.
-
-2. Resultados:
-
-Acurácia: 56,82%
-
-F1-Score: 58,41%
-
-Precisão: 61,33%
-
-Recall: 56,82%
-
-### Notebook 3: 3_gnn.ipynb
-
-Este é o notebook mais complexo, modelando o cérebro como um grafo e aplicando uma Rede Neural de Grafos (GNN).
-
-1. Metodologia:
-
-Construção do Grafo:
-
-Para cada paciente, uma matriz de correlação estática (pearson) é calculada.
-
-Essa matriz densa é então "podada" usando o algoritmo OMST (Orthogonal Minimal Spanning Tree). O objetivo é criar um "backbone" esparso e eficiente da rede cerebral, mantendo apenas as conexões mais importantes, otimizando um balanço entre custo e eficiência da rede (GCE - Global Cost Efficiency).
-
-Características dos Nós (Node Features): As características de cada nó (ROI) são definidas como o seu "perfil de conexão", que corresponde à linha inteira da matriz de correlação original e densa.
-
-Modelo: Uma GCN (Graph Convolutional Network) é usada para a classificação. O modelo aprende a partir da estrutura do grafo OMST (as conexões) e das características dos nós (os perfis de conexão).
-
-Tratamento de Dados: O desbalanceamento é tratado no DataLoader usando um WeightedRandomSampler.
-
-2. Resultados:
-
-Acurácia: 38,64%
-
-F1-Score: 30,60%
-
-AUC: 59,55% (0.59)
+* **[1_correlation_matrix.ipynb](notebooks/1_correlation_matrix.ipynb):** é proposta uma baseline para a tarefa. Para isso, uma rede neural foi treinada diretamente sobre a triangular superior da matriz de correlação achatada. O desbalanceamento de classes é abordado utilizando `RandomOverSampler`, que replica aleatoriamente amostras da classe minoritária no conjunto de treinamento. Foram exploradas diversas métricas para a construção da matriz. A rede escolhida foi uma rede Multilayer Perceptron simples, com Dropout e uma camada oculta.
+* **[2_time_series.ipynb](notebooks/2_time_series.ipynb):** esse notebook explora uma abordagem sem a matriz de conectividade - ao invés disso, são utilizadas as séries ROI como entrada. É esperado um desempenho pior, dado as hipóteses de conectividade. O desbalanceamento de classes no conjunto de treinamento é tratado com a técnica SMOTE (Synthetic Minority Over-sampling Technique), que cria amostras sintéticas da classe minoritária.
+Efetivamente, a Fully Convolutional Network treinada diretamente nas séries temporais das Regiões de Interesse não consegue aprender os padrões da doença de Parkinson.
+* **[3_gnn.ipynb](notebooks/3_gnn.ipynb):** para aumentar a acurácia na tarefa de classificação, é aplicado um modelo mais robusto para identificação de doenças através da conectividade, inspirado em estudos com dados similares em outras doenças ([ The Combination of a Graph Neural Network Technique and Brain Imaging to Diagnose Neurological Disorders: A Review and Outlook ](https://pubmed.ncbi.nlm.nih.gov/37891830/)). Para tanto, é construído um grafo esparso e eficiente da rede cerebral, mantendo apenas as conexões mais importantes, em um balanço entre custo e eficiência da rede. Os vértices são caracterizados utilizando a linha correspondente da matriz de correlação. O desbalanceamento é tratado no `DataLoader` usando um `WeightedRandomSampler`. GNNs são aplicadas para classificação. 
 
 ## Resultados
 ### Matriz de Correlação
