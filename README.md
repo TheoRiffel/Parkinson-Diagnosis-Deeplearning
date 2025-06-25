@@ -169,7 +169,6 @@ Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, coloc
 
 ### Criando o ambiente virtual `t1_rnap_parkinson` e instalando dependências:
 ``` bash
-conda config --set channel_priority flexible # configuração necessária para instalação
 conda env create -f environment.yaml
 conda activate t1_rnap_parkinson
 pip install -e . # cria o pacote parkinson
