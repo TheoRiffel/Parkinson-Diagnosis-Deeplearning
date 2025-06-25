@@ -1,35 +1,36 @@
-import numpy as np
 import os
 import sys
 import time
+
+import numpy as np
+import pandas as pd
+
 from pathlib import Path
 from joblib import Parallel, delayed
-from fastdtw import fastdtw
-from scipy.spatial.distance import euclidean
+from scipy.signal import csd, welch
 
 from .utils import save_cache, load_cache, min_max_normalize
 
-def dtw_distance(time_series1: np.array, time_series2: np.array) -> float:
-    distance, _ = fastdtw(time_series1.reshape(-1, 1), time_series2.reshape(-1, 1), dist=euclidean)
-    return distance
-
-def compute_functional_network(time_series: np.array, distance_function: callable) -> np.array:
-    n = time_series.shape[0]
-    functional_network = np.zeros((n, n))
-    for i in range(1, n):
-        for j in range(i + 1, n):
-            distance = distance_function(time_series[i].reshape(-1, 1), time_series[j].reshape(-1, 1))
-            functional_network[i, j] = distance
-            functional_network[j, i] = distance
-    return functional_network
-
-def compute_dtw_matrix(time_series) -> np.array:
+def compute_icoh_matrix(time_series, sfreq=1000, fmin=8, fmax=30, nperseg=256):
     data = time_series.to_numpy().T  # shape (n_canais, n_amostras)
-    dtw_net = compute_functional_network(data, dtw_distance)
-    iu = np.triu_indices(dtw_net.shape[0])
-    return dtw_net[iu]
+    n_channels = data.shape[0]
+    n_samples = data.shape[1]
+    nperseg = min(nperseg, n_samples)
+    icoh_mat = np.zeros((n_channels, n_channels))
+    for i in range(n_channels):
+        for j in range(i, n_channels):
+            f, Pxy = csd(data[i], data[j], fs=sfreq, nperseg=nperseg)
+            _, Pxx = welch(data[i], fs=sfreq, nperseg=nperseg)
+            _, Pyy = welch(data[j], fs=sfreq, nperseg=nperseg)
+            coh_complex = Pxy / np.sqrt(Pxx * Pyy)
+            freq_mask = (f >= fmin) & (f <= fmax)
+            icoh_val = np.mean(np.abs(np.imag(coh_complex[freq_mask])))
+            icoh_mat[i, j] = icoh_val
+            icoh_mat[j, i] = icoh_val
+    iu = np.triu_indices(n_channels)
+    return icoh_mat[iu]
 
-def compute_all_dtw_matrices(time_series_list, cache_path, n_jobs=4):
+def compute_all_icoh_matrices(time_series_list, cache_path, n_jobs=4, sfreq=1000, fmin=8, fmax=30, nperseg=256):
     if os.path.exists(cache_path):
         print(f"Carregando cache existente de {cache_path}...")
         completed_results = load_cache(cache_path)
@@ -47,7 +48,7 @@ def compute_all_dtw_matrices(time_series_list, cache_path, n_jobs=4):
         print(f"Iniciando paciente {idx+1}...")
         start_time = time.time()
         ts = time_series_list[idx]
-        result = compute_dtw_matrix(ts)
+        result = compute_icoh_matrix(ts, sfreq=sfreq, fmin=fmin, fmax=fmax, nperseg=nperseg)
         elapsed = time.time() - start_time
         print(f"Paciente {idx+1} finalizado em {elapsed:.2f} segundos.")
         return idx, result
@@ -69,16 +70,23 @@ def compute_all_dtw_matrices(time_series_list, cache_path, n_jobs=4):
     ordered_results = [completed_results[i] for i in range(total)]
     return ordered_results
 
-def dtw_correlation(time_series_list, group, n_jobs=6, **kwargs):
+def icoh_correlation(time_series_list: list[pd.DataFrame], group: str, n_jobs: int=6) -> list[np.array]:
+    """
+    Computa a correlação de Imaginary Coherence, que considera a parcela imaginária da 
+    correlação entre séries no domínio das frequências.
+
+    :param str group: 'parkinson' ou 'control'
+    :return: matriz de correlação iCOH por paciente
+    """
     root = Path(__file__).resolve().parents[3]
     sys.path.append('/')
-    cache_dir = os.path.join(root, 'data/dtw_matrix')
+    cache_dir = os.path.join(root, 'data/iCOH_matrix')
     os.makedirs(cache_dir, exist_ok=True)
     if group == 'parkinson':
-        cache_path = os.path.join(cache_dir, 'cache_dtw_parkinson_final.pkl')
+        cache_path = os.path.join(cache_dir, 'cache_icoh_parkinson_final.pkl')
     elif group == 'control':
-        cache_path = os.path.join(cache_dir, 'cache_dtw_control_final.pkl')
+        cache_path = os.path.join(cache_dir, 'cache_icoh_control_final.pkl')
     else:
         raise ValueError("group deve ser 'parkinson' ou 'control'")
-    dtw_matrices = compute_all_dtw_matrices(time_series_list, cache_path, n_jobs=n_jobs)
-    return [min_max_normalize(mat) for mat in dtw_matrices]
+    icoh_matrices = compute_all_icoh_matrices(time_series_list, cache_path, n_jobs=n_jobs)
+    return [min_max_normalize(mat) for mat in icoh_matrices]

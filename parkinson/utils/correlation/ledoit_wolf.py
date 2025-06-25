@@ -1,10 +1,13 @@
 import numpy as np
+import pandas as pd
 from sklearn.covariance import LedoitWolf
 
-def ledoit_wolf_correlation(time_series_list, **kwargs):
+def ledoit_wolf_correlation(time_series_list: list[pd.DataFrame]) -> list[np.array]:
     """
     Calcula a matriz de correlação usando o estimador Ledoit-Wolf para cada paciente.
-    Retorna uma lista com os elementos do triângulo superior de cada matriz.
+    Esse estimador reduz a variância para as amostras utilizando shrinkage.
+    
+    Retorna lista results com os elementos do triângulo superior de cada matriz.
     """
     results = []
     for ts in time_series_list:

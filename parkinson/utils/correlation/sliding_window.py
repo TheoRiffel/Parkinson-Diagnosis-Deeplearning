@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-def get_window_size(time_series_list, min_ratio=0.3, max_ratio=0.5):
+def get_window_size(time_series_list: list[pd.DataFrame], min_ratio: float, max_ratio: float) -> int:
     lengths = [ts.shape[0] for ts in time_series_list]
     min_len = min(lengths)
     max_len = max(lengths)
@@ -10,8 +10,8 @@ def get_window_size(time_series_list, min_ratio=0.3, max_ratio=0.5):
     window_size = int(avg_len * 0.4)
     return max(2, window_size)  # pelo menos 2
 
-def sliding_window_correlation(time_series_list, **kwargs):
-    window_size = get_window_size(time_series_list)
+def sliding_window_correlation(time_series_list: list[pd.DataFrame], min_ratio: float = 0.3, max_ratio: float = 0.5) -> list[np.array]:
+    window_size = get_window_size(time_series_list, min_ratio, max_ratio)
     step_size = window_size // 2  # sobreposição de 50%
     results = []
 

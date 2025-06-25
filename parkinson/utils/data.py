@@ -39,7 +39,9 @@ def concatenate_data(
         data2: list[np.array],
         data3: list[np.array] = None
     ) -> np.array:
-    """Stack two lists[np.array]"""
+    """
+    Stack two lists[np.array]
+    """
     
     data = np.concatenate([
         data1,
@@ -52,7 +54,9 @@ def concatenate_data(
     return data
 
 def filter_data(X: np.array, y: np.array) -> tuple[np.array, np.array]:
-    """Substitui NaNs por 0 nas séries"""
+    """
+    Substitui NaNs por 0 nas séries
+    """
     X = np.nan_to_num(X, nan=0.0)
     return X, y
 
@@ -70,7 +74,9 @@ def get_torch_dataloader(
         shuffle: bool = True,
         num_workers: int = 4
     ) -> DataLoader:
-    """"Get torch dataloader"""
+    """"
+    Get torch dataloader
+    """
     
     X_tensor = torch.tensor(X, dtype=torch.float32)
     y_tensor = torch.tensor(y, dtype=torch.long)

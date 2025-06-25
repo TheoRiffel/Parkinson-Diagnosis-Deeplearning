@@ -6,9 +6,20 @@ import torch.nn as nn
 from tqdm import tqdm
 from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_score
 
-def train_model(model, train_loader, val_loader, criterion, optimizer,
-               num_epochs, patience, path2bestmodel, device):
-    """Treina só no train_loader, salva o modelo de menor train-loss, sem early stopping."""
+def train_model(
+        model: torch.nn.Module, 
+        train_loader: torch.utils.data.DataLoader, 
+        val_loader: torch.utils.data.DataLoader, 
+        device: torch.device,
+        criterion,
+        optimizer: torch.optim,
+        num_epochs: int = 200,
+        patience: int = 20,
+        path2bestmodel: str = None,
+    ):
+    """
+    Treina só no train_loader, salva o modelo de menor train-loss, sem early stopping
+    """
     os.makedirs(path2bestmodel, exist_ok=True)
     model.to(device).train()
 
@@ -89,24 +100,40 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
         'epoch_end': final_epoch
     }
 
-def train(model, train_loader, val_loader, device, num_epochs, patience, lr, decay=0.1,  class_weights = None):
+def train(
+        model: torch.nn.Module, 
+        train_loader: torch.utils.data.DataLoader, 
+        val_loader: torch.utils.data.DataLoader, 
+        device: torch.device,
+        num_epochs: int = 200,
+        patience: int = 20,
+        lr: float = 0.0001,
+        decay=0.1,
+        class_weights: list[float] = None
+    ):
 
     optimizer = torch.optim.Adam(model.parameters(),lr=lr, betas=(0.9,0.999), eps=1e-8, weight_decay=decay)
     
-    if class_weights == None:
+    if class_weights is None:
         criterion = nn.CrossEntropyLoss()
     else:
         criterion = nn.CrossEntropyLoss(weight=class_weights.to(device))
 
-    train_metrics = train_model(model, train_loader, val_loader, criterion, optimizer,
-                                num_epochs=num_epochs,
-                                patience=patience,
-                                path2bestmodel=f"../weights/",
-                                device=device)
+    train_metrics = train_model(
+        model=model,
+        train_loader=train_loader,
+        val_loader=val_loader,
+        criterion=criterion,
+        optimizer=optimizer,
+        num_epochs=num_epochs,
+        patience=patience,
+        path2bestmodel=f"../weights/",
+        device=device
+    )
     
     return train_metrics
 
-def evaluate(model, test_loader, device):
+def evaluate(model: torch.nn.Module, test_loader: torch.utils.data.DataLoader, device: torch.device):
     model.load_state_dict(torch.load("../weights/best_model.pth", map_location=device))
     model.eval()
 
