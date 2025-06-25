@@ -5,12 +5,7 @@ Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes
 ### Alunos:
     Gabriel da Costa Merlin - 12544420
     Théo Bruno Frey Riffel - 12547812
-    
-#TODO
-    @frois explicar o trem do conda do pacote parkinson
-    @todos botar os resultados de cada notebook na sessão Resultados
-    @todos mudar os nomes do notebooks para os finais
-    @todos ver se funciona o tutorial de instalação
+    Vítor Amorim Fróis - 12543440
 
 ## Sobre o Projeto:
 
@@ -22,19 +17,17 @@ A ressonância magnética funcional (fMRI) possibilita medir o sinal dependente 
 
 Nos últimos anos, técnicas avançadas de neuroimagem se tornaram fundamentais na busca pela identificação de biomarcadores objetivos e não invasivos da patologia da DP. Entre elas, a ressonância magnética funcional em estado de repouso (rs-fMRI) surgiu como uma ferramenta particularmente poderosa. Em um ramo da neurociência chamdo Conectomas Cerebrais, onde procura-se entender a organização, funcionalidade e comportamento do cérebro humano, é comum a metodologia de utilizar dados rs-fMRI para identificar e caracterizar a organização cerebral de pacientes. 
 
-Extraindo as séries BOLD de N regiões específicas do cérebro (comunmente chamadas de ROI's) e correlacionando-as com medidas de proximidade entre séries (Person, Mutual Information, DTW), montamos uma matriz A (NxN), onde cada elemento $ a_ij $ corresponde, ou tem a interpretação de, ao grau de interdependência funcional entre a região $i$ e a região $j$. Isso é, se o sinal BOLD da região $i$ é consistentemente similar ao sinal BOLD da região $j$, mostrado pelas métricas de correlação, dizemos que essas regiões compartilham funções parecidas no cérebro, ou que uma é dependente funcionalmente da outra. A partir dessa matriz A, chamada na literatura de **Matriz de Conectividade** é que extraímos informações valiosas sobre a organização e funcionamento do cérebro. Particularmente, essa matriz será essencial para diferenciar pacientes Controle saudáveis de pacientes com Parkinson.
+Extraindo as séries BOLD de N regiões específicas do cérebro (comumente chamadas de ROI's) e correlacionando-as com medidas de proximidade entre séries (Person, Mutual Information, DTW), montamos uma matriz A (NxN), onde cada elemento $a_{ij}$ corresponde, ou tem a interpretação de, ao grau de interdependência funcional entre a região $i$ e a região $j$. Isso é, se o sinal BOLD da região $i$ é consistentemente similar ao sinal BOLD da região $j$, mostrado pelas métricas de correlação, dizemos que essas regiões compartilham funções parecidas no cérebro, ou que uma é dependente funcionalmente da outra. A partir dessa matriz A, chamada na literatura de **Matriz de Conectividade** é que extraímos informações valiosas sobre a organização e funcionamento do cérebro. Particularmente, essa matriz será essencial para diferenciar pacientes Controle saudáveis de pacientes com Parkinson.
 
 Nesse repositório, abordamos vários métodos para o diagnóstico. Cada abordagem está listada em um notebook separado. A seguir, uma explicação breve de cada notebook e suas técnicas. Cada notebook está disponível no diretório 'notebooks'.
 
-Contamos com dados de 66 pacientes saudáveis (Control), 153 pacientes com Parkinon Avançado e 188 pacientes com parkinson em estágio inicial.
+Contamos com dados de 66 pacientes saudáveis (Control) e 153 pacientes com Parkinon Avançado.
 
 Veremos no diretório Notebooks:
 
-* **0_correlation_matrix.ipynb:** Modelo Baseline. Consiste em uma Shallow Network MLP (Multilayer Perceptron) básica.
-* **2_pytorch.ipynb:** Rede Neural mais apurada. Contem normalizador Dropout, separação treino/validação/teste, a ajuste fino dos hiperparâmetros.
-* **3_pure_timeseries.ipynb:** Consiste na aplicação de uma MLP diretamente nas séries temporais BOLD das ROI's.
-* **4_multiclassifier.ipynb:** Modelo multiclassificador entre as 3 classes de pacientes. 
-* **5_GNN.ipynb:** Aplicação de GNN (Graph Neural Network).
+* **1_correlation_matrix.ipynb:** Modelo que consiste em MLP customizada, contendo normalizador Dropout.
+* **2_time_series.ipynb:** Consiste na aplicação de uma MLP diretamente nas séries temporais BOLD das ROI's.
+* **3_gnn.ipynb:** Aplicação de GNN (Graph Neural Network).
 
 ## Resultados
 
@@ -42,53 +35,22 @@ Veremos no diretório Notebooks:
 
 
 
----
-
-## Tecnologias Utilizadas
-
-* **Linguagem:** Python 3
-* **Redes Neurais:** Pytorch
-
----
 
 ## Configuração e Instalação
 
 Siga estes passos para configurar e executar o projeto em sua máquina local.
 
-### Pré-requisitos
+### Baixando o código:
+```bash
+git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
+cd Parkinson-Diagnosis-Deeplearning
+```
 
-* Python 3.8 ou superior
-* `pip` (instalador de pacotes do Python)
-
-### Passos para Instalação
-
-1.  **Clonar o Repositório**
-    ```bash
-    git clone https://github.com/theoriffel/parkinson-diagnosis-deeplearning.git
-    cd Parkinson-Diagnosis-Deeplearning
-    ```
-
-2.  **(Recomendado) Criar e Ativar um Ambiente Virtual**
-
-    * No **macOS/Linux**:
-        ```bash
-        python3 -m venv venv
-        source venv/bin/activate
-        ```
-
-    * No **Windows**:
-        ```bash
-        python -m venv venv
-        .\venv\Scripts\activate
-        ```
-
-3.  **Instalar as Dependências**
-    Instale os pacotes necessários usando o `pip`:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
----
+### Instalando pré-requisitos:
+```bash
+conda env create -f environment.yaml
+conda activate t1_rnap_parkinson
+```
 
 ## Como Usar
 

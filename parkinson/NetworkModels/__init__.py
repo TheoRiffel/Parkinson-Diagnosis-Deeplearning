@@ -1,2 +1,2 @@
-from .simpleMLP import SimpleMLP
+from .customMLP import customMLP
 from .customFCN import customFCN
