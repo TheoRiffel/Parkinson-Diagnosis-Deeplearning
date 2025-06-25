@@ -8,6 +8,26 @@ Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes
     Théo Bruno Frey Riffel - 12547812
     Vítor Amorim Fróis - 12543440
 
+## Configuração e Instalação
+
+Siga estes passos para configurar e executar o projeto em sua máquina local.
+
+### Baixando o código:
+``` bash
+git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
+cd Parkinson-Diagnosis-Deeplearning
+```
+### Baixando os dados:
+Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
+
+### Criando o ambiente virtual `parkinson` e instalando dependências:
+``` bash
+make create-env
+make module # cria o pacote parkinson
+```
+
+Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
+
 ## Projeto
 
 Este repositório contém um projeto para o diagnóstico da doença de Parkinson (DP) usando aprendizado profundo.
@@ -31,28 +51,36 @@ A matriz simétrica $A_{N \times N}$ recebe o nome de **Matriz de Conectividade*
 Assim, cada notebook explora uma abordagem para identificação da doença de Parkinson a partir da Matriz de Conectividade e estão disponíveis no diretório `notebooks`.
 
 * **[1_correlation_matrix.ipynb](notebooks/1_correlation_matrix.ipynb):** é proposta uma baseline para a tarefa. Para isso, uma rede neural foi treinada diretamente sobre a triangular superior da matriz de correlação. Foram exploradas diversas métricas para a construção da matriz. A rede escolhida foi uma MLP simples, com Dropout e uma camada oculta.
-* **[2_time_series.ipynb](notebooks/2_time_series.ipynb):** esse notebook explora uma abordagem sem a matriz de conectividade. É esperado um desempenho pior, dado as hipóteses de conectividade. Efetivamente, a MLP treinada diretamente nas séries temporais das Regiões de Interesse não consegue aprender os padrões da doença de Parkinson.
+* **[2_time_series.ipynb](notebooks/2_time_series.ipynb):** esse notebook explora uma abordagem sem a matriz de conectividade. É esperado um desempenho pior, dado as hipóteses de conectividade. Efetivamente, a Fully Convolutional Network treinada diretamente nas séries temporais das Regiões de Interesse não consegue aprender os padrões da doença de Parkinson.
 * **[3_gnn.ipynb](notebooks/3_gnn.ipynb):** para aumentar a acurácia na tarefa de classificação, é aplicado um modelo mais robusto para identificação de doenças através da conectividade, inspirado em estudos com dados similares em outras doenças ([ The Combination of a Graph Neural Network Technique and Brain Imaging to Diagnose Neurological Disorders: A Review and Outlook ](https://pubmed.ncbi.nlm.nih.gov/37891830/)). Para tanto, é construído um grafo robusto com Spanning Trees. Os vértices são caracterizados utilizando a correlação e GNNs são aplicadas para classificação. 
 
 ## Resultados
+### Matriz de Correlação
+| Acurácia | F1-Score | Precisão | Recall |
+|:--------:|----------|----------|--------|
+| 77,27%   | 71,75%   | 82,82%   | 77,27% |
 
+### FCN
+| Acurácia | F1-Score | Precisão | Recall |
+|:--------:|----------|----------|--------|
+| 56,82%   | 58,41%   | 61,33%   | 56,82% |
 
-## Configuração e Instalação
+### GCN
+| Acurácia | F1-Score | AUC    |
+|:--------:|----------|--------|
+| 38,64%   | 30,60%   | 59,55% |
 
-Siga estes passos para configurar e executar o projeto em sua máquina local.
+A abordagem proposta no notebook 1 apresentou o melhor desempenho. Isso sugere fortemente que a conectividade funcional dinâmica é a característica mais informativa para esta tarefa de classificação. Já a abordagem mais complexa e teoricamente avançada (Notebook 3) teve o pior desempenho.
 
-### Baixando o código:
-``` bash
-git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
-cd Parkinson-Diagnosis-Deeplearning
-```
-### Baixando os dados:
-Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
+| Característica | Notebook 1 (MLP) | Notebook 2 (FCN) | Notebook 3 (GNN) |
+| :--- | :--- | :--- | :--- |
+| **Abordagem** | Conectividade Funcional Dinâmica | Série Temporal Bruta | Estrutura de Grafo (Backbone) |
+| **Modelo** | MLP | FCN (CNN 1D) | GCN (Rede Neural de Grafo) |
+| **Complexidade** | Moderada | Moderada | Alta |
+| **Acurácia (Teste)** | **77,27%** | 56,82% | 38,64% |
+| **F1-Score (Teste)** | **71,75%** | 58,41% | 30,60% |
+| **Desempenho Geral** | **Bom** | Moderado | Fraco |
 
-### Criando o ambiente virtual `parkinson` e instalando dependências:
-``` bash
-make create-env
-make module # cria o pacote parkinson
-```
+## Conclusão
+Todos os modelos sofreram com **overfitting**, evidenciado pela rapidez da acurácia de treinamento para alcançar 100% e pela rapidez da subida do erro de validação. Para lidar com isso, os modelos foram simplificados. Mesmo assim, o problema do overfitting persistiu. Assim, o modelo mais simples atingiu o melhor resultado. Futuramente, os notebooks serão adaptados com modelos mais robustos que capturem insights nos dados sem aumentar a complexidade de forma excessiva.
 
-Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
