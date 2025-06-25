@@ -35,14 +35,6 @@ Veremos no diretório Notebooks:
 
 
 
----
-
-## Tecnologias Utilizadas
-
-* **Linguagem:** Python 3
-* **Redes Neurais:** Pytorch
-
----
 
 ## Configuração e Instalação
 
