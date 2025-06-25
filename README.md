@@ -4,6 +4,7 @@ Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes
 
 ### Alunos:
     Gabriel da Costa Merlin - 12544420
+    João Pedro Soares de Azevedo Calixto - 13732011
     Théo Bruno Frey Riffel - 12547812
     Vítor Amorim Fróis - 12543440
 
