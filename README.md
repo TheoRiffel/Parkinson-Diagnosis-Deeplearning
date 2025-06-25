@@ -22,6 +22,7 @@ Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, coloc
 
 ### Criando o ambiente virtual `t1_rnap_parkinson` e instalando dependências:
 ``` bash
+conda config --set channel_priority flexible # configuração necessária para instalação
 conda env create -f environment.yaml
 conda activate t1_rnap_parkinson
 pip install -e . # cria o pacote parkinson
@@ -51,10 +52,15 @@ A matriz simétrica $A_{N \times N}$ recebe o nome de **Matriz de Conectividade*
 
 Assim, cada notebook explora uma abordagem para identificação da doença de Parkinson a partir da Matriz de Conectividade e estão disponíveis no diretório `notebooks`.
 
-* **[1_correlation_matrix.ipynb](notebooks/1_correlation_matrix.ipynb):** é proposta uma baseline para a tarefa. Para isso, uma rede neural foi treinada diretamente sobre a triangular superior da matriz de correlação achatada. O desbalanceamento de classes é abordado utilizando `RandomOverSampler`, que replica aleatoriamente amostras da classe minoritária no conjunto de treinamento. Foram exploradas diversas métricas para a construção da matriz. A rede escolhida foi uma rede Multilayer Perceptron simples, com Dropout e uma camada oculta.
-* **[2_time_series.ipynb](notebooks/2_time_series.ipynb):** esse notebook explora uma abordagem sem a matriz de conectividade - ao invés disso, são utilizadas as séries ROI como entrada. É esperado um desempenho pior, dado as hipóteses de conectividade. O desbalanceamento de classes no conjunto de treinamento é tratado com a técnica SMOTE (Synthetic Minority Over-sampling Technique), que cria amostras sintéticas da classe minoritária.
+### [1_correlation_matrix.ipynb](notebooks/1_correlation_matrix.ipynb)
+É proposta uma baseline para a tarefa. Para isso, uma rede neural foi treinada diretamente sobre a triangular superior da matriz de correlação achatada. O desbalanceamento de classes é abordado utilizando `RandomOverSampler`, que replica aleatoriamente amostras da classe minoritária no conjunto de treinamento. Foram exploradas diversas métricas para a construção da matriz. A rede escolhida foi uma rede Multilayer Perceptron simples, com Dropout e uma camada oculta.
+
+### [2_time_series.ipynb](notebooks/2_time_series.ipynb)
+Esse notebook explora uma abordagem sem a matriz de conectividade - ao invés disso, são utilizadas as séries ROI como entrada. É esperado um desempenho pior, dado as hipóteses de conectividade. O desbalanceamento de classes no conjunto de treinamento é tratado com a técnica SMOTE (Synthetic Minority Over-sampling Technique), que cria amostras sintéticas da classe minoritária.
 Efetivamente, a Fully Convolutional Network treinada diretamente nas séries temporais das Regiões de Interesse não consegue aprender os padrões da doença de Parkinson.
-* **[3_gnn.ipynb](notebooks/3_gnn.ipynb):** para aumentar a acurácia na tarefa de classificação, é aplicado um modelo mais robusto para identificação de doenças através da conectividade, inspirado em estudos com dados similares em outras doenças ([ The Combination of a Graph Neural Network Technique and Brain Imaging to Diagnose Neurological Disorders: A Review and Outlook ](https://pubmed.ncbi.nlm.nih.gov/37891830/)). Para tanto, é construído um grafo esparso e eficiente da rede cerebral, mantendo apenas as conexões mais importantes, em um balanço entre custo e eficiência da rede. Os vértices são caracterizados utilizando a linha correspondente da matriz de correlação. O desbalanceamento é tratado no `DataLoader` usando um `WeightedRandomSampler`. GNNs são aplicadas para classificação. 
+
+### [3_gnn.ipynb](notebooks/3_gnn.ipynb)
+Para aumentar a acurácia na tarefa de classificação, é aplicado um modelo mais robusto para identificação de doenças através da conectividade, inspirado em estudos com dados similares em outras doenças ([ The Combination of a Graph Neural Network Technique and Brain Imaging to Diagnose Neurological Disorders: A Review and Outlook ](https://pubmed.ncbi.nlm.nih.gov/37891830/)). Para tanto, é construído um grafo esparso e eficiente da rede cerebral, mantendo apenas as conexões mais importantes, em um balanço entre custo e eficiência da rede. Os vértices são caracterizados utilizando a linha correspondente da matriz de correlação. O desbalanceamento é tratado no `DataLoader` usando um `WeightedRandomSampler`. GNNs são aplicadas para classificação. 
 
 ## Resultados
 ### Matriz de Correlação
@@ -85,24 +91,3 @@ A abordagem proposta no notebook 1 apresentou o melhor desempenho. Isso sugere f
 
 ## Conclusão
 Todos os modelos sofreram com **overfitting**, evidenciado pela rapidez da acurácia de treinamento para alcançar 100% e pela rapidez da subida do erro de validação. Para lidar com isso, os modelos foram simplificados. Mesmo assim, o problema do overfitting persistiu. Assim, o modelo mais simples atingiu o melhor resultado. Futuramente, os notebooks serão adaptados com modelos mais robustos que capturem insights nos dados sem aumentar a complexidade de forma excessiva.
-
-## Configuração e Instalação
-
-Siga estes passos para configurar e executar o projeto em sua máquina local.
-
-### Baixando o código:
-``` bash
-git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
-cd Parkinson-Diagnosis-Deeplearning
-```
-### Baixando os dados:
-Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
-
-### Criando o ambiente virtual `t1_rnap_parkinson` e instalando dependências:
-``` bash
-conda env create -f environment.yaml
-conda activate t1_rnap_parkinson
-pip install -e . # cria o pacote parkinson
-```
-
-Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
