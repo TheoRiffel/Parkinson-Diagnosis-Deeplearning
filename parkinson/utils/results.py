@@ -11,6 +11,7 @@ def plot_losses(train_loss: np.array, val_loss: np.array):
     ax.plot(np.arange(len(train_loss)), train_loss, color='b', label='train')
     ax.plot(np.arange(len(val_loss)), val_loss, color='r', label='val')
     ax.legend()
+    return fig
 
 def plot_confusion_matrix(preds: np.array, labels: np.array, class_names: list[str] = None):
     """

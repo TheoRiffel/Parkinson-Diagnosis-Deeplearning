@@ -2,9 +2,9 @@
 
 Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes Neurais e Aprendizado Profundo (2025)
 
-    Francisco Maian - 
-    João Calixto - 
+    Francisco Luiz Maian do Nascimento - 14570890
     Gabriel da Costa Merlin - 12544420
+    João Pedro Soares de Azevedo Calixto - 13732011
     Théo Bruno Frey Riffel - 12547812
     Vítor Amorim Fróis - 12543440
 
