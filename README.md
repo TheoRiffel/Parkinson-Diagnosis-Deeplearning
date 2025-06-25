@@ -34,7 +34,94 @@ Assim, cada notebook explora uma abordagem para identificação da doença de Pa
 * **[2_time_series.ipynb](notebooks/2_time_series.ipynb):** esse notebook explora uma abordagem sem a matriz de conectividade. É esperado um desempenho pior, dado as hipóteses de conectividade. Efetivamente, a MLP treinada diretamente nas séries temporais das Regiões de Interesse não consegue aprender os padrões da doença de Parkinson.
 * **[3_gnn.ipynb](notebooks/3_gnn.ipynb):** para aumentar a acurácia na tarefa de classificação, é aplicado um modelo mais robusto para identificação de doenças através da conectividade, inspirado em estudos com dados similares em outras doenças ([ The Combination of a Graph Neural Network Technique and Brain Imaging to Diagnose Neurological Disorders: A Review and Outlook ](https://pubmed.ncbi.nlm.nih.gov/37891830/)). Para tanto, é construído um grafo robusto com Spanning Trees. Os vértices são caracterizados utilizando a correlação e GNNs são aplicadas para classificação. 
 
+## Análise dos métodos
+
+### Notebook 1: 1_correlation_matrix.ipynb (Matriz de Correlação + MLP)
+Este notebook aborda o problema de classificação usando uma abordagem baseada em conectividade funcional dinâmica.
+
+1. Metodologia:
+
+Extração de Características: A principal característica extraída das séries temporais de fMRI é a matriz de correlação funcional. O método sliding_window_correlation (correlação com janela deslizante) é utilizado, o que captura a natureza dinâmica da conectividade cerebral ao longo do tempo, em vez de uma correlação estática única.
+
+Modelo: As matrizes de correlação são então "achatadas" (vetorizadas) e usadas como entrada para um MLP (Multi-Layer Perceptron), uma rede neural totalmente conectada padrão.
+
+Tratamento de Dados: O desbalanceamento de classes é tratado usando RandomOverSampler, que replica aleatoriamente amostras da classe minoritária no conjunto de treinamento.
+
+2. Resultados:
+
+Acurácia: 77,27%
+
+F1-Score: 71,75%
+
+Precisão: 82,82%
+
+Recall: 77,27%
+
+### Notebook 2: 2_time_series.ipynb
+
+Este notebook tenta classificar os pacientes usando diretamente os dados de séries temporais, uma abordagem de ponta a ponta ("end-to-end").
+
+1. Metodologia:
+
+Extração de Características: Nenhuma característica complexa é pré-calculada. O modelo utiliza as séries temporais brutas de cada ROI (Região de Interesse) do cérebro como entrada.
+
+Modelo: É utilizada uma FCN (Fully Convolutional Network), que é um tipo de Rede Neural Convolucional (CNN) 1D, adequada para extrair padrões diretamente de dados sequenciais como séries temporais.
+
+Tratamento de Dados: O desbalanceamento de classes no conjunto de treinamento é tratado com a técnica SMOTE (Synthetic Minority Over-sampling Technique), que cria amostras sintéticas da classe minoritária.
+
+2. Resultados:
+
+Acurácia: 56,82%
+
+F1-Score: 58,41%
+
+Precisão: 61,33%
+
+Recall: 56,82%
+
+### Notebook 3: 3_gnn.ipynb
+
+Este é o notebook mais complexo, modelando o cérebro como um grafo e aplicando uma Rede Neural de Grafos (GNN).
+
+1. Metodologia:
+
+Construção do Grafo:
+
+Para cada paciente, uma matriz de correlação estática (pearson) é calculada.
+
+Essa matriz densa é então "podada" usando o algoritmo OMST (Orthogonal Minimal Spanning Tree). O objetivo é criar um "backbone" esparso e eficiente da rede cerebral, mantendo apenas as conexões mais importantes, otimizando um balanço entre custo e eficiência da rede (GCE - Global Cost Efficiency).
+
+Características dos Nós (Node Features): As características de cada nó (ROI) são definidas como o seu "perfil de conexão", que corresponde à linha inteira da matriz de correlação original e densa.
+
+Modelo: Uma GCN (Graph Convolutional Network) é usada para a classificação. O modelo aprende a partir da estrutura do grafo OMST (as conexões) e das características dos nós (os perfis de conexão).
+
+Tratamento de Dados: O desbalanceamento é tratado no DataLoader usando um WeightedRandomSampler.
+
+2. Resultados:
+
+Acurácia: 38,64%
+
+F1-Score: 30,60%
+
+AUC: 59,55% (0.59)
+
 ## Resultados
+
+Conclusões Comparativas:
+
+A Melhor Abordagem: O Notebook 1 (MLP com matriz de correlação de janela deslizante) apresentou o melhor desempenho. Isso sugere fortemente que a conectividade funcional dinâmica é a característica mais informativa para esta tarefa de classificação.
+
+Complexidade vs. Desempenho: A abordagem mais complexa e teoricamente avançada (Notebook 3, GNN) teve o pior desempenho. Isso é, mais complexidade não garantiu melhores resultados.
+
+
+| Característica | Notebook 1 (MLP) | Notebook 2 (FCN) | Notebook 3 (GNN) |
+| :--- | :--- | :--- | :--- |
+| **Abordagem** | Conectividade Funcional Dinâmica | Série Temporal Bruta | Estrutura de Grafo (Backbone) |
+| **Modelo** | MLP | FCN (CNN 1D) | GCN (Rede Neural de Grafo) |
+| **Complexidade** | Moderada | Moderada | Alta |
+| **Acurácia (Teste)** | **77,27%** | 56,82% | 38,64% |
+| **F1-Score (Teste)** | **71,75%** | 58,41% | 30,60% |
+| **Desempenho Geral** | **Bom** | Moderado | Fraco |
 
 
 ## Configuração e Instalação
