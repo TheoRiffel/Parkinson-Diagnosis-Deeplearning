@@ -46,6 +46,9 @@ git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
 cd Parkinson-Diagnosis-Deeplearning
 ```
 
+### Baixando os dados:
+Como mencionado anteriormente, esses dados ainda não são públicos. Portanto, não podemos disponibilizá-los em um repositório público no GitHub. Por isso, enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
+
 ### Instalando pré-requisitos:
 ```bash
 conda env create -f environment.yaml
