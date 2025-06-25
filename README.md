@@ -45,16 +45,13 @@ Siga estes passos para configurar e executar o projeto em sua máquina local.
 git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
 cd Parkinson-Diagnosis-Deeplearning
 ```
-
 ### Baixando os dados:
-Como mencionado anteriormente, esses dados ainda não são públicos. Portanto, não podemos disponibilizá-los em um repositório público no GitHub. Por isso, enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
+Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
 
-### Instalando pré-requisitos:
+### Criando o ambiente virtual `parkinson` e instalando dependências:
 ```bash
-conda env create -f environment.yaml
-conda activate t1_rnap_parkinson
+make create-env
+make module # cria o pacote parkinson
 ```
-
-## Como Usar
 
 Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
