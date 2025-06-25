@@ -155,3 +155,24 @@ A abordagem proposta no notebook 1 apresentou o melhor desempenho. Isso sugere f
 ## Conclusão
 Todos os modelos sofreram com **overfitting**, evidenciado pela rapidez da acurácia de treinamento para alcançar 100% e pela rapidez da subida do erro de validação. Para lidar com isso, os modelos foram simplificados. Mesmo assim, o problema do overfitting persistiu. Assim, o modelo mais simples atingiu o melhor resultado. Futuramente, os notebooks serão adaptados com modelos mais robustos que capturem insights nos dados sem aumentar a complexidade de forma excessiva.
 
+## Configuração e Instalação
+
+Siga estes passos para configurar e executar o projeto em sua máquina local.
+
+### Baixando o código:
+``` bash
+git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
+cd Parkinson-Diagnosis-Deeplearning
+```
+### Baixando os dados:
+Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
+
+### Criando o ambiente virtual `t1_rnap_parkinson` e instalando dependências:
+``` bash
+conda config --set channel_priority flexible # configuração necessária para instalação
+conda env create -f environment.yaml
+conda activate t1_rnap_parkinson
+pip install -e . # cria o pacote parkinson
+```
+
+Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
