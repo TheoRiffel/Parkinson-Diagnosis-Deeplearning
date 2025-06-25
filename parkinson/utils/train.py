@@ -89,7 +89,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer,
         'epoch_end': final_epoch
     }
 
-def train(model, train_loader, val_loader, device, num_epochs, patience, lr, decay=0.1,  class_weights = None):
+def train(model, train_loader, val_loader, device, num_epochs, patience, lr, path, decay=0.1,  class_weights = None):
 
     optimizer = torch.optim.Adam(model.parameters(),lr=lr, betas=(0.9,0.999), eps=1e-8, weight_decay=decay)
     
@@ -101,13 +101,13 @@ def train(model, train_loader, val_loader, device, num_epochs, patience, lr, dec
     train_metrics = train_model(model, train_loader, val_loader, criterion, optimizer,
                                 num_epochs=num_epochs,
                                 patience=patience,
-                                path2bestmodel=f"../weights/",
+                                path2bestmodel=path,
                                 device=device)
     
     return train_metrics
 
-def evaluate(model, test_loader, device):
-    model.load_state_dict(torch.load("../weights/best_model.pth", map_location=device))
+def evaluate(model, test_loader, device, path):
+    model.load_state_dict(torch.load(f"{path}/best_model.pth", map_location=device))
     model.eval()
 
     all_preds, all_labels = [], []
