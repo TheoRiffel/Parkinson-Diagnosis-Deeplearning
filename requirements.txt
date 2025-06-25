@@ -13,3 +13,5 @@ python-dateutil
 seaborn
 imbalanced-learn
 pypickle
+torch
+torch-geometric
