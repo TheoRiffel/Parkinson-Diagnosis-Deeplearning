@@ -40,40 +40,17 @@ Veremos no diretório Notebooks:
 
 Siga estes passos para configurar e executar o projeto em sua máquina local.
 
-### Pré-requisitos
+### Baixando o código:
+```bash
+git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
+cd Parkinson-Diagnosis-Deeplearning
+```
 
-* Python 3.8 ou superior
-* `pip` (instalador de pacotes do Python)
-
-### Passos para Instalação
-
-1.  **Clonar o Repositório**
-    ```bash
-    git clone https://github.com/theoriffel/parkinson-diagnosis-deeplearning.git
-    cd Parkinson-Diagnosis-Deeplearning
-    ```
-
-2.  **(Recomendado) Criar e Ativar um Ambiente Virtual**
-
-    * No **macOS/Linux**:
-        ```bash
-        python3 -m venv venv
-        source venv/bin/activate
-        ```
-
-    * No **Windows**:
-        ```bash
-        python -m venv venv
-        .\venv\Scripts\activate
-        ```
-
-3.  **Instalar as Dependências**
-    Instale os pacotes necessários usando o `pip`:
-    ```bash
-    pip install -r requirements.txt
-    ```
-
----
+### Instalando pré-requisitos:
+```bash
+conda env create -f environment.yaml
+conda activate t1_rnap_parkinson
+```
 
 ## Como Usar
 
