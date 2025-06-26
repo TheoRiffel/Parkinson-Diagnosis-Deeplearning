@@ -7,7 +7,6 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - ./notebooks:/home/jovyan/work    # seus notebooks
       - ./:/home/jovyan/work             # todo o repositório
     environment:
       JUPYTER_ENABLE_LAB: "yes"          # abre em JupyterLab por padrão
