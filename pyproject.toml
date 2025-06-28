@@ -1,8 +1,15 @@
-[tool.poetry]
-name = "parkinson"                # obrigatório
-version = "0.1.0"                 # obrigatório
-description = "Diagnóstico Parkinson"  # obrigatório
-authors = ["Alunos do Diego :3"]  # obrigatório
+[project]
+name = "parkinson"
+version = "0.1.0"
+description = "Diagnóstico Parkinson"
+
+authors = [
+    { name = "Francisco Luiz Maian do Nascimento"},
+    { name = "Gabriel da Costa Merlin" },
+    { name = "João Pedro Soares de Azevedo Calixto" },
+    { name = "Théo Bruno Frey Riffel" },
+    { name = "Vítor Amorim Fróis" }
+]
 
 
 [tool.setuptools]

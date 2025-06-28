@@ -27,8 +27,9 @@ poetry:
 	@source $(CONDA_SH) && \
 	conda activate $(ENV_NAME) && \
 	poetry config virtualenvs.create false && \
-	poetry config virtualenvs.prefer-active-python true && \
+	poetry config virtualenvs.use-poetry-python true && \
 	poetry install
+
 
 ## Registra o kernel Jupyter apontando para 'parkinson'
 kernel:
