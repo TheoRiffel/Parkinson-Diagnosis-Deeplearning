@@ -1,48 +1,32 @@
-# Makefile para criação do ambiente Conda + Poetry + kernel Jupyter
+.PHONY: setup install kernel notebook clean
 
-SHELL := /bin/bash
-CONDA_SH := $(HOME)/miniconda3/etc/profile.d/conda.sh
-ENV_NAME := parkinson
-ENV_FILE := environment.yaml
+# 1) Configura Poetry para criar um .venv local e usa o Python que você apontou
+setup:
+	poetry config virtualenvs.create true
+	poetry config virtualenvs.in-project true
+	poetry config virtualenvs.path --unset
+	poetry config virtualenvs.use-poetry-python false
+	poetry env remove --all || true
+	poetry env use $(shell which python3)
 
-.PHONY: all env poetry kernel clean
-
-all: env poetry kernel
-	@echo "(OK) => Tudo pronto! Use 'jupyter notebook' e selecione o kernel 'Python ($(ENV_NAME))'."
-
-## Cria ou atualiza o ambiente Conda a partir do environment.yaml
-env:
-	@echo "(1/3) Configurando ambiente Conda '$(ENV_NAME)'…"
-	@source $(CONDA_SH) && \
-	conda config --set channel_priority flexible && \
-	if conda env list | grep -qE "^$(ENV_NAME)\s"; then \
-	  conda env update -n $(ENV_NAME) -f $(ENV_FILE) --prune; \
-	else \
-	  conda env create -n $(ENV_NAME) -f $(ENV_FILE); \
-	fi
-
-## Configura o Poetry para usar o ambiente atual e instala libs Python
-poetry:
-	@echo "(2/3) => Instalando dependências Python via Poetry…"
-	@source $(CONDA_SH) && \
-	conda activate $(ENV_NAME) && \
-	poetry config virtualenvs.create false && \
-	poetry config virtualenvs.use-poetry-python true && \
+# 2) Instala tudo no .venv local
+install:
 	poetry install
 
-
-## Registra o kernel Jupyter apontando para 'parkinson'
+# 3) Registra o kernel Jupyter com nome “parkinson”
 kernel:
-	@echo "(3/3) => Registrando kernel Jupyter '$(ENV_NAME)'…"
-	@source $(CONDA_SH) && \
-	conda activate $(ENV_NAME) && \
-	poetry run python -m ipykernel install --user \
-	  --name $(ENV_NAME) \
-	  --display-name "Python ($(ENV_NAME))"
-	
-## (Opcional) Remove o kernel e apaga o ambiente
+	. ./.venv/bin/activate && \
+	python -m ipykernel install \
+	   --user \
+	   --name=parkinson \
+	   --display-name="Python (parkinson)"
+
+# 4) Ativa e abre o Jupyter
+notebook:
+	. ./.venv/bin/activate && \
+	poetry run jupyter notebook
+
+# 5) Limpa o .venv e o kernel (opcional)
 clean:
-	@echo "Removendo kernel e ambiente Conda…"
-	@source $(CONDA_SH) && \
-	jupyter kernelspec uninstall -f $(ENV_NAME) || true && \
-	conda env remove -n $(ENV_NAME) || true
+	poetry run jupyter kernelspec uninstall -f parkinson || true
+	rm -rf ./.venv
