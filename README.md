@@ -25,7 +25,7 @@ Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, coloc
 make all
 ```
 
-#### Depois de utilizar, executar o código abaixo para excluir o que foi instalado
+#### Depois de utilizar, executar o comando abaixo para excluir o que foi instalado
 ``` bash
 make clean
 ```
