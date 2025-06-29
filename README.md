@@ -24,6 +24,7 @@ Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, coloc
 ``` bash
 make all
 ```
+Depois, basta selecionar o ambiente `parkinson` dentro dos `kernels do jupyter`
 
 #### Depois de utilizar, executar o comando abaixo para excluir o que foi instalado
 ``` bash
