@@ -1,5 +1,7 @@
 .PHONY: setup install kernel notebook clean
 
+all: setup install kernel
+
 # 1) Configura Poetry para criar um .venv local e usa o Python que você apontou
 setup:
 	poetry config virtualenvs.create true
@@ -12,6 +14,11 @@ setup:
 # 2) Instala tudo no .venv local
 install:
 	poetry install
+	poetry add ipykernel
+	poetry run python -m ipykernel install \
+		--user \
+		--name parkinson \
+		--display-name "Python (parkinson)"
 
 # 3) Registra o kernel Jupyter com nome “parkinson”
 kernel:
