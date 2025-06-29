@@ -21,6 +21,10 @@ cd Parkinson-Diagnosis-Deeplearning
 Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
 
 ### Criando o ambiente virtual `parkinson` e instalando dependências:
+
+Primeiro, [instalar o Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
+
+Quando não for mais executar o projeto, deletar o ambiente criado:
 ``` bash
 make all
 ```
