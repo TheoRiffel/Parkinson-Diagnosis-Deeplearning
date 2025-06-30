@@ -36,6 +36,7 @@ torch-geometric = "2.6.1"
 tqdm = "4.67.1"
 fastdtw = "0.3.4"
 imblearn = "0.0"
+optuna = "^4.4.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
