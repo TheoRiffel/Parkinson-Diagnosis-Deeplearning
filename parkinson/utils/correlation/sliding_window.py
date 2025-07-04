@@ -10,10 +10,12 @@ def get_window_size(time_series_list: list[pd.DataFrame], min_ratio: float, max_
     window_size = int(avg_len * 0.4)
     return max(2, window_size)  # pelo menos 2
 
-def sliding_window_correlation(time_series_list: list[pd.DataFrame], min_ratio: float = 0.3, max_ratio: float = 0.5) -> list[np.array]:
+def sliding_window_correlation(time_series_list: list[pd.DataFrame], min_ratio: float = 0.3, max_ratio: float = 0.5, return_upper_triangular: bool = True) -> list[np.array]:
     window_size = get_window_size(time_series_list, min_ratio, max_ratio)
     step_size = window_size // 2  # sobreposição de 50%
     results = []
+    triu_indices = np.triu_indices(time_series_list[0].shape[1])
+
 
     for ts in time_series_list:
         n_timepoints, n_regions = ts.shape
@@ -27,6 +29,8 @@ def sliding_window_correlation(time_series_list: list[pd.DataFrame], min_ratio: 
             corr = ts.corr(method='pearson').to_numpy()
             matrices.append(corr)
         mean_corr = np.mean(matrices, axis=0)
-        iu = np.triu_indices(n_regions)
-        results.append(mean_corr[iu])
+        if return_upper_triangular:
+            results.append(mean_corr[iu])
+        else:
+            results.append(mean_corr)
     return results

@@ -20,12 +20,19 @@ cd Parkinson-Diagnosis-Deeplearning
 ### Baixando os dados:
 Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
 
-### Criando o ambiente virtual `t1_rnap_parkinson` e instalando dependências:
+### Criando o ambiente virtual `parkinson` e instalando dependências:
+
+Primeiro, [instalar o Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
+
+Quando não for mais executar o projeto, deletar o ambiente criado:
 ``` bash
-conda config --set channel_priority flexible # configuração necessária para instalação
-conda env create -f environment.yaml
-conda activate t1_rnap_parkinson
-pip install -e . # cria o pacote parkinson
+make all
+```
+Depois, basta selecionar o ambiente `parkinson` dentro dos `kernels do jupyter`
+
+#### Depois de utilizar, executar o comando abaixo para excluir o que foi instalado
+``` bash
+make clean
 ```
 
 Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
