@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.covariance import LedoitWolf
 
-def ledoit_wolf_correlation(time_series_list: list[pd.DataFrame]) -> list[np.array]:
+def ledoit_wolf_correlation(time_series_list: list[pd.DataFrame], return_upper_triangular: bool = True) -> list[np.array]:
     """
     Calcula a matriz de correlação usando o estimador Ledoit-Wolf para cada paciente.
     Esse estimador reduz a variância para as amostras utilizando shrinkage.
@@ -10,6 +10,7 @@ def ledoit_wolf_correlation(time_series_list: list[pd.DataFrame]) -> list[np.arr
     Retorna lista results com os elementos do triângulo superior de cada matriz.
     """
     results = []
+    triu_indices = [np.triu_indices(time_series_list[0].shape[1])]
     for ts in time_series_list:
         data = ts.to_numpy()
         # Centraliza os dados (média zero por coluna)
@@ -19,6 +20,8 @@ def ledoit_wolf_correlation(time_series_list: list[pd.DataFrame]) -> list[np.arr
         d = np.sqrt(np.diag(cov))
         corr = cov / np.outer(d, d)
         corr = np.clip(corr, -1, 1)
-        iu = np.triu_indices(corr.shape[0])
-        results.append(corr[iu])
+        if return_upper_triangular:
+            results.append(corr[triu_indices])
+        else:
+            results.append(corr)
     return results
