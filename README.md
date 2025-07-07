@@ -1,3 +1,4 @@
+
 # Dianóstico de Parkinson baseado em Redes Cerebrais Funcionais
 
 Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes Neurais e Aprendizado Profundo (2025)
