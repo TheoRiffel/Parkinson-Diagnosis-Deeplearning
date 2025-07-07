@@ -1,46 +1,17 @@
 [project]
-name = "parkinson"
-version = "0.1.0"
-description = "Diagnóstico Parkinson"
-
-authors = [
-    { name = "Francisco Luiz Maian do Nascimento"},
-    { name = "Gabriel da Costa Merlin" },
-    { name = "João Pedro Soares de Azevedo Calixto" },
-    { name = "Théo Bruno Frey Riffel" },
-    { name = "Vítor Amorim Fróis" }
+name = "Parkinson-Diagnosis-Deeplearning"
+version = "1.0.0"
+description = "Detecting Parkinson Disease through fMRI multivariate temporal series"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
 ]
-
 
 [tool.setuptools]
 packages = ["parkinson", "parkinson.utils", "parkinson.NetworkModels"]
 
+
 [project.urls]
 Homepage = "https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning"
-
-[tool.poetry.dependencies]
-python = ">=3.11"
-ipykernel = "6.29.5"
-ipython = "9.3.0"
-jupyter-client = "8.6.3"
-jupyter-core = "5.8.1"
-aiohttp = "3.12.13"
-numpy = "2.3.1"
-pandas = "2.3.0"
-scipy = "1.16.0"
-scikit-learn = "1.6.1"
-matplotlib = "3.10.3"
-seaborn = "0.13.2"
-torch = "2.7.1"
-torch-geometric = "2.6.1"
-tqdm = "4.67.1"
-fastdtw = "0.3.4"
-imblearn = "0.0"
-optuna = "^4.4.0"
-
-[tool.poetry.group.dev.dependencies]
-ipykernel = "^6.29.5"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"

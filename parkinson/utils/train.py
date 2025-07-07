@@ -113,13 +113,7 @@ def train(
         class_weights: list[float] = None
     ):
 
-    optimizer = torch.optim.Adam(
-        model.parameters(),
-        lr=lr,
-        betas=(0.9,0.999),
-        eps=1e-8,
-        weight_decay=decay
-    )
+    optimizer = torch.optim.Adam(model.parameters(),lr=lr, betas=(0.9,0.999), eps=1e-8, weight_decay=decay)
     
     if class_weights is None:
         criterion = nn.CrossEntropyLoss()
@@ -140,9 +134,8 @@ def train(
     
     return train_metrics
 
-def evaluate(model: torch.nn.Module, test_loader: torch.utils.data.DataLoader, device: torch.device, path: str = None):
-    if path is not None:
-        model.load_state_dict(torch.load( f"{path}/best_model.pth", map_location=device))
+def evaluate(model: torch.nn.Module, test_loader: torch.utils.data.DataLoader, device: torch.device, path: str):
+    model.load_state_dict(torch.load( f"{path}/best_model.pth", map_location=device))
     model.eval()
 
     all_preds, all_labels = [], []
