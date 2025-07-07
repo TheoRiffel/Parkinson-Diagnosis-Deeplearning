@@ -2319,6 +2319,19 @@ files = [
 tests = ["pytest"]
 
 [[package]]
+name = "pycatch22"
+version = "0.4.5"
+description = "22 CAnonical Time-series Features"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "pycatch22-0.4.5-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:3dbd07e96187d72fed5a3981122a2949a2e167a49b887e15cf24a12f84e71c8e"},
+    {file = "pycatch22-0.4.5-cp310-cp310-win_amd64.whl", hash = "sha256:cb13614d4bd720caf9f3e67772674297c342ce8cba945f324128f69a54e919f5"},
+    {file = "pycatch22-0.4.5.tar.gz", hash = "sha256:7ec844c659f22bedc66847ac866ef2bd86ffbbd4d8114b5e97f699f20a6f9f81"},
+]
+
+[[package]]
 name = "pycparser"
 version = "2.22"
 description = "C parser in Python"
