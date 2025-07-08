@@ -12,7 +12,7 @@ class customFCN(nn.Module):
                   padding='same'),  
         nn.BatchNorm1d(128),  
         nn.ReLU(),
-        nn.Dropout(0.5)
+        # nn.Dropout(0.5)
     )
     
     self.block2 = nn.Sequential(
@@ -22,7 +22,7 @@ class customFCN(nn.Module):
                   padding='same'),  
         nn.BatchNorm1d(256),  
         nn.ReLU(),
-        nn.Dropout(0.5)
+        # nn.Dropout(0.5)
     )
     
     self.block3 = nn.Sequential(
@@ -32,7 +32,7 @@ class customFCN(nn.Module):
                   padding='same'),  
         nn.BatchNorm1d(128),  
         nn.ReLU(),
-        nn.Dropout(0.5)
+        # nn.Dropout(0.5)
     )
     
     self.fc = nn.Sequential(
