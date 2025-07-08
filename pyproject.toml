@@ -38,6 +38,7 @@ fastdtw = "0.3.4"
 imblearn = "0.0"
 optuna = "^4.4.0"
 pycatch22 = "0.4.5"
+xgboost = "^3.0.2"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"

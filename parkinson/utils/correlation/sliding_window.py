@@ -16,7 +16,6 @@ def sliding_window_correlation(time_series_list: list[pd.DataFrame], min_ratio: 
     results = []
     triu_indices = np.triu_indices(time_series_list[0].shape[1])
 
-
     for ts in time_series_list:
         n_timepoints, n_regions = ts.shape
         matrices = []
@@ -30,7 +29,7 @@ def sliding_window_correlation(time_series_list: list[pd.DataFrame], min_ratio: 
             matrices.append(corr)
         mean_corr = np.mean(matrices, axis=0)
         if return_upper_triangular:
-            results.append(mean_corr[iu])
+            results.append(mean_corr[triu_indices])
         else:
             results.append(mean_corr)
     return results

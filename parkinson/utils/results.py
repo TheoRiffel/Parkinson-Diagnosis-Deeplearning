@@ -9,7 +9,8 @@ def plot_losses(train_loss: np.array, val_loss: np.array):
     """
     fig, ax = plt.subplots()
     ax.plot(np.arange(len(train_loss)), train_loss, color='b', label='train')
-    ax.plot(np.arange(len(val_loss)), val_loss, color='r', label='val')
+    if val_loss != None:
+        ax.plot(np.arange(len(val_loss)), val_loss, color='r', label='val')
     ax.legend()
     return fig
 

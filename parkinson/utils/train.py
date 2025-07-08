@@ -9,37 +9,36 @@ from sklearn.metrics import f1_score, accuracy_score, recall_score, precision_sc
 def train_model(
         model: torch.nn.Module, 
         train_loader: torch.utils.data.DataLoader, 
-        val_loader: torch.utils.data.DataLoader, 
-        device: torch.device,
-        criterion,
-        optimizer: torch.optim,
+        val_loader: torch.utils.data.DataLoader = None, 
+        device: torch.device = None,
+        criterion=None,
+        optimizer=None,
         num_epochs: int = 200,
         patience: int = 20,
         path2bestmodel: str = None,
     ):
     """
-    Treina só no train_loader, salva o modelo de menor train-loss, sem early stopping
+    Treina só no train_loader. Se val_loader for fornecido, usa early stopping com base na val-loss.
     """
-    os.makedirs(path2bestmodel, exist_ok=True)
+    if path2bestmodel:
+        os.makedirs(path2bestmodel, exist_ok=True)
+
     model.to(device).train()
 
     best_val_loss = float('inf')
-    train_losses = []
-    val_losses = []
-    train_accs = []
-    val_accs = []
+    train_losses, val_losses = [], []
+    train_accs, val_accs = [], []
     patience_counter = 0
     final_epoch = 0
 
-    epoch_progress_bar = tqdm(range(1, num_epochs+1), desc="Epoch")
+    epoch_progress_bar = tqdm(range(1, num_epochs + 1), desc="Epoch")
 
     for epoch in epoch_progress_bar:
 
         # Treinamento
         model.train()
-        running_loss = 0.0
-        correct = 0
-        total = 0
+        running_loss, correct, total = 0.0, 0, 0
+
         for x, y in train_loader:
             x, y = x.to(device), y.to(device)
             optimizer.zero_grad()
@@ -58,45 +57,61 @@ def train_model(
         train_losses.append(avg_loss)
         train_accs.append(acc)
 
-        # Validação
-        model.eval()
-        val_running_loss = 0.0
-        val_correct = 0
-        val_total = 0
-        with torch.no_grad():
-            for x, y in val_loader:
-                x, y = x.to(device), y.to(device)
-                out = model(x)
-                loss = criterion(out, y)
-                val_running_loss += loss.item()
-                preds = out.argmax(1)
-                val_correct += (preds == y).sum().item()
-                val_total += y.size(0)
-        val_avg_loss = val_running_loss / len(val_loader)
-        val_acc = val_correct / val_total
-        val_losses.append(val_avg_loss)
-        val_accs.append(val_acc)
+        log_str = f"train-loss: {avg_loss:.4f}  train-acc: {acc:.4f}"
 
-        # Early stopping
-        if val_avg_loss < best_val_loss:
-            best_val_loss = val_avg_loss
-            patience_counter = 0
-            final_epoch = epoch
+        # Validação (se fornecida)
+        if val_loader is not None:
+            model.eval()
+            val_running_loss, val_correct, val_total = 0.0, 0, 0
+            with torch.no_grad():
+                for x, y in val_loader:
+                    x, y = x.to(device), y.to(device)
+                    out = model(x)
+                    loss = criterion(out, y)
+                    val_running_loss += loss.item()
+                    preds = out.argmax(1)
+                    val_correct += (preds == y).sum().item()
+                    val_total += y.size(0)
+
+            val_avg_loss = val_running_loss / len(val_loader)
+            val_acc = val_correct / val_total
+            val_losses.append(val_avg_loss)
+            val_accs.append(val_acc)
+
+            log_str += f" | val-loss: {val_avg_loss:.4f}  val-acc: {val_acc:.4f}"
+
+            # Early stopping
+            if val_avg_loss < best_val_loss:
+                best_val_loss = val_avg_loss
+                patience_counter = 0
+                final_epoch = epoch
+                if path2bestmodel:
+                    torch.save(model.state_dict(), f"{path2bestmodel}/best_model.pth")
+            else:
+                patience_counter += 1
+
+            if patience_counter >= patience:
+                print(f"Early stopping at epoch {epoch}")
+                break
         else:
-            patience_counter += 1
+            # Salva modelo de menor training loss, se não houver validação
+            if avg_loss < best_val_loss:
+                best_val_loss = avg_loss
+                final_epoch = epoch
+                if path2bestmodel:
+                    torch.save(model.state_dict(), f"{path2bestmodel}/best_model.pth")
 
-        epoch_progress_bar.set_description(f"train-loss: {avg_loss:.4f}  train-acc: {acc:.4f} | val-loss: {val_avg_loss:.4f}  val-acc: {val_acc:.4f}")
+        epoch_progress_bar.set_description(log_str)
 
-        if patience_counter >= patience:
-            print(f"Early stopping at epoch {epoch}")
-            break
+    # Se não salvou nada (ex: path2bestmodel == None), salva ao final se possível
+    if path2bestmodel and not os.path.exists(f"{path2bestmodel}/best_model.pth"):
+        torch.save(model.state_dict(), f"{path2bestmodel}/best_model.pth")
 
-    torch.save(model.state_dict(), f"{path2bestmodel}/best_model.pth")
     return {
         'train_loss': train_losses,
         'train_acc': train_accs,
-        'val_loss': val_losses,
-        'val_acc': val_accs,
+        'val_loss': val_losses if val_loader is not None else None,
+        'val_acc': val_accs if val_loader is not None else None,
         'epoch_end': final_epoch
     }
 
