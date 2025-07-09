@@ -20,7 +20,6 @@ Homepage = "https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning"
 
 [tool.poetry.dependencies]
 python = ">=3.11"
-ipykernel = "6.29.5"
 ipython = "9.3.0"
 jupyter-client = "8.6.3"
 jupyter-core = "5.8.1"
@@ -39,8 +38,8 @@ imblearn = "0.0"
 optuna = "^4.4.0"
 pycatch22 = "0.4.5"
 xgboost = "^3.0.2"
+ipykernel = "^6.29.5"
 
-torch-sparse = "0.6.18"
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
 
