@@ -40,6 +40,7 @@ optuna = "^4.4.0"
 pycatch22 = "0.4.5"
 xgboost = "^3.0.2"
 
+torch-sparse = "0.6.18"
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.5"
 

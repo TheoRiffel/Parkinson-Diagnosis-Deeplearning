@@ -1,6 +1,9 @@
 data/Controls_columns/
 data/PDs_columns/
 data/Prodomals_columns/
+data/Control_OMSTs/
+data/Parkinson_OMSTs/
+data/Prodomal_OMSTs/
 **/__pycache__/
 Parkinson_Diagnosis_Deeplearning.egg-info/
 /teste
