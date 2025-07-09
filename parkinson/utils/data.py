@@ -35,23 +35,19 @@ def select_atlas_columns(
     return selected_data
 
 def concatenate_data(
-        data1: list[np.array],
-        data2: list[np.array],
-        data3: list[np.array] = None
+        *data_arrays: list[np.array],
     ) -> np.array:
     """
-    Stack two lists[np.array]
+    Stack two or more list[np.array]
     """
-    
-    data = np.concatenate([
-        data1,
-        data2,
-    ], axis=0)
 
-    if data3 is not None:
-        data = np.concatenate([data, data3], axis=0)
+    if not data_arrays:
+        raise ValueError("At least one list of numpy arrays must be provided for concatenation.")
 
-    return data
+    all_arrays = [arr for arr in data_arrays]
+
+    return np.concatenate(all_arrays, axis=0)
+
 
 def filter_data(X: np.array, y: np.array) -> tuple[np.array, np.array]:
     """
@@ -81,7 +77,7 @@ def get_torch_dataloader(
     X_tensor = torch.tensor(X, dtype=torch.float32)
     y_tensor = torch.tensor(y, dtype=torch.long)
     dataset = TensorDataset(X_tensor, y_tensor)
-    loader = DataLoader(dataset, batch_size, shuffle=True, num_workers=num_workers)
+    loader = DataLoader(dataset, batch_size, shuffle=shuffle, num_workers=num_workers)
 
     return loader
 

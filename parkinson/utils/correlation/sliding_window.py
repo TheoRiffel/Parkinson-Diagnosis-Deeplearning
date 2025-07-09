@@ -16,7 +16,6 @@ def sliding_window_correlation(time_series_list: list[pd.DataFrame], min_ratio: 
     results = []
     triu_indices = np.triu_indices(time_series_list[0].shape[1])
 
-
     for ts in time_series_list:
         n_timepoints, n_regions = ts.shape
         matrices = []
