@@ -77,7 +77,7 @@ def get_torch_dataloader(
     X_tensor = torch.tensor(X, dtype=torch.float32)
     y_tensor = torch.tensor(y, dtype=torch.long)
     dataset = TensorDataset(X_tensor, y_tensor)
-    loader = DataLoader(dataset, batch_size, shuffle=True, num_workers=num_workers)
+    loader = DataLoader(dataset, batch_size, shuffle=shuffle, num_workers=num_workers)
 
     return loader
 
