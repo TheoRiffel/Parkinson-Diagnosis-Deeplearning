@@ -138,29 +138,12 @@ Esses resultados sugerem que a forma como as regiões cerebrais se conectam, cap
 
 ## Resultados
 
-### Séries Temporais
+Todos os resultados, métricas e gráficos podem ser encontradas nos notebook de cada método. Destacamos os resultados mais relevantes abaixo, sendo que para cada métrica (coluna) deixamos em negrito o melhor modelo, além disso ordenamos as linhas pela ordem decrescente em acurácia.
 
-|  Métrica | FCN (CNN 1D) | Catch22 + Classificador |
-| :------: | :----------: | :---------------------: |
-| Acurácia |    ------    |            —            |
-| F1-Score |    ------    |            —            |
-| Precisão |    ------    |            —            |
-|  Recall  |    ------    |            —            |
-
-### Matriz de Conectividade
-
-|  Métrica |   MLP  |
-| :------: | :----: |
-| Acurácia | ------ |
-| F1-Score | ------ |
-| Precisão | ------ |
-|  Recall  | ------ |
-
-### Rede Cerebral (GNN)
-
-|  Métrica |   GNN  |
-| :------: | :----: |
-| Acurácia | ------ |
-| F1-Score | ------ |
-| Precisão | ------ |
-|  Recall  | ------ |
+| Modelo                      | Acurácia | F1-Score (Ponderado) | Precisão (Ponderada) | Recall (Ponderado) |
+| --------------------------- | -------- | -------------------- | -------------------- | ------------------ |
+| Multimodalidade             | **0.682927** | **0.657274**             | **0.727573**             | **0.682927**           |
+| Matriz de Conectividade     | 0.646341 | 0.639605             | 0.637495             | 0.646341           |
+| Séries Temporais            | 0.475610 | 0.467637             | 0.462998             | 0.475610           |
+| Baseline                    | 0.461916 | 0.291900             | 0.213367             | 0.461916           |
+| GNN                         | 0.414600 | 0.402400             | 0.420000             | 0.410000           |
