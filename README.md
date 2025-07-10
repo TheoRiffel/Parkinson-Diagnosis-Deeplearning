@@ -17,7 +17,7 @@ cd Parkinson-Diagnosis-Deeplearning
 ```
 
 ### Baixando os dados:
-Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
+Enviamos um link no eDisciplinas que vai para o Google Drive que contém arquivos .zip com os dados. Basta baixá-los, colocá-los na pasta data/ e extraí-los.
 
 ### Criando o ambiente virtual `parkinson` e instalando dependências:
 
