@@ -1,7 +1,6 @@
-
 # Dianóstico de Parkinson baseado em Redes Cerebrais Funcionais
 
-Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes Neurais e Aprendizado Profundo (2025)
+Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes Neurais e Aprendizado Profundo (2025) e foi desenvolvido pelos alunos:
 
     Francisco Luiz Maian do Nascimento - 14570890
     Gabriel da Costa Merlin - 12544420
@@ -11,91 +10,157 @@ Este repositório faz parte da entrega do trabalho da disciplina SCC0270 - Redes
 
 ## Configuração e Instalação
 
-Siga estes passos para configurar e executar o projeto em sua máquina local.
-
 ### Baixando o código:
 ``` bash
 git clone https://github.com/TheoRiffel/Parkinson-Diagnosis-Deeplearning.git
 cd Parkinson-Diagnosis-Deeplearning
 ```
+
 ### Baixando os dados:
 Enviamos um arquivo .zip com os dados pelo e-Disciplinas. Basta baixá-lo, colocá-lo na pasta data/ e extraí-lo.
 
 ### Criando o ambiente virtual `parkinson` e instalando dependências:
 
-Primeiro, [instalar o Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
+1. [Instalar o Poetry](https://python-poetry.org/docs/#installing-with-the-official-installer)
 
-Quando não for mais executar o projeto, deletar o ambiente criado:
+2. Criar o ambiente 'parkinson'
 ``` bash
 make all
 ```
-Depois, basta selecionar o ambiente `parkinson` dentro dos `kernels do jupyter`
 
-#### Depois de utilizar, executar o comando abaixo para excluir o que foi instalado
+3. Selecionar o ambiente `parkinson` dentro dos `kernels do jupyter`
+
+
+Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
+
+
+- Depois de utilizar, executar o comando abaixo para excluir o que foi instalado    
 ``` bash
 make clean
 ```
 
-Com a configuração concluída, você pode executar os notebooks no diretório 'notebooks'.
+## Sobre o projeto
 
-## Projeto
+Este repositório contém um projeto para o diagnóstico multiclasse da doença de Parkinson (DP) a partir de dados de ressonância magnética funcional em repouso (rs-fMRI), baseado em três abordagens principais:
 
-Este repositório contém um projeto para o diagnóstico da doença de Parkinson (DP) usando aprendizado profundo.
+1. **Séries Temporais**
 
-A doença de Parkinson é uma doença neurológica que afeta os movimentos da pessoa. Nesse sentido, a aplicação de Redes Neurais Profundas se destaca como uma ferramenta para identificação precoce da doença. A doença de Parkinson afeta a região cerebral, assim buscamos treinar uma Rede Neural que identifica a doença em dados cerebrais dos novos pacientes.
+   * Extraímos as séries temporais BOLD (Blood-Oxygen-Level-Dependent) de cada Região de Interesse (ROI) para cada paciente.
 
-A ressonância magnética funcional (fMRI) mede o sinal dependente do nível de oxigênio no sangue (BOLD). Os disparos neurais produzem alterações detectáveis no fMRI. Assim, o sinal serve como um indicador indireto da atividade neural, baseado no fluxo sanguíneo e da oxigenação.
+   * Comparamos duas estratégias de classificação:
+     * **Fully Convolutional Network (FCN):** modelos convolucionais 1D treinados diretamente sobre as séries temporais.
+     * **Catch22:** conjunto de 22 métricas extraídas das séries, usadas como características em classificadores simples.
 
-Nesse projeto, utilizamos dados de fMRI recolhidos com pacientes em repouso. Os dados de rs-fMRI (resting state functional Magnetic Ressonance Imaging) foram obtidos da [base de dados PPMI](https://www.ppmi-info.org/PPMI) e pré-processados com a ferramenta [CONN toolbox](https://web.conn-toolbox.org/) para remover ruídos de movimento físico dos pacientes durante o exame, ruídos provenientes da máquina e de efeitos adversos do campo magnético. Para acessar os dados, contate um dos contribuidores do projeto. As amostras para cada grupo são exibidas abaixo.
+   * Realizamos experimentos de classificação:
+     * Binária (Controles vs. Parkinson avançado)
+     * Multiclasse (Controles, Prodomal, Parkinson)
+     * Classificação em duas etapas (Controle vs. Doente; Prodomal vs. Parkinson)
 
-| Controle 	| Parkinson 	|
-|:--------:	|-----------	|
-| 66       	| 153       	|
+2. **Matriz de Conectividade**
 
-Nos últimos anos, técnicas avançadas de neuroimagem se tornaram fundamentais na busca pela identificação não invasiva da DP. Na área de Conectomas Cerebrais, utilizam-se dados rs-fMRI para entender a organização, funcionalidade e comportamento do cérebro humano. A principal hipótese explorada é de que a conectividade do cérebro é alterada para pacientes que apresentam a doença de Parkinson ([Connectomics: a new paradigm for understanding brain disease](https://pubmed.ncbi.nlm.nih.gov/24726580/), [Human brain networks in health and disease](https://pubmed.ncbi.nlm.nih.gov/19494774/)).
+   * Construímos a Matriz de Conectividade funcional correlacionando as séries BOLD das ROIs usando métricas de similaridade:
 
-Para tanto, é possível associar os dados de rs-fMRI com cada região do cérebro, através da agregação dos voxels em cada instante de tempo. Assim, obtemos uma série temporal multivariada para cada paciente, onde cada canal corresponde a uma região. Dado a hipótese de conectividade, podemos utilizar métricas de similaridade, como Dynamic Time Warping, Correlação de Pearson e iCOH para obter a matriz $A$ de correlação entre as séries. 
+     * Pearson, Spearman, Sliding Window, Dynamic Time Warping (DTW) e Imaginary Coherence (iCOH).
 
-A matriz simétrica $A_{N \times N}$ recebe o nome de **Matriz de Conectividade**, onde cada elemento $a_{ij}$ corresponde ao grau de dependência funcional entre a região $i$ e a região $j$. Isso é, se o sinal BOLD da região $i$ é similar ao sinal BOLD da região $j$, dizemos que essas regiões compartilham funções parecidas no cérebro. 
+  * Comparamos duas estratégias de classificação:
 
-Assim, cada notebook explora uma abordagem para identificação da doença de Parkinson a partir da Matriz de Conectividade e estão disponíveis no diretório `notebooks`.
+    * Aplicamos redes Multilayer Perceptron (MLP) diretamente sobre a metade superior da matriz (vetorizada), tratando o desbalanceamento com `RandomOverSampler` ou SMOTE.
 
-### [1_correlation_matrix.ipynb](notebooks/1_correlation_matrix.ipynb)
-É proposta uma baseline para a tarefa. Para isso, uma rede neural foi treinada diretamente sobre a triangular superior da matriz de correlação achatada. O desbalanceamento de classes é abordado utilizando `RandomOverSampler`, que replica aleatoriamente amostras da classe minoritária no conjunto de treinamento. Foram exploradas diversas métricas para a construção da matriz. A rede escolhida foi uma rede Multilayer Perceptron simples, com Dropout e uma camada oculta.
+    * Além de utilizar apenas a matriz de conectividade das séries BOLD das ROIs, também extraímos características das séries BOLD usando o método Catch22. Com essas características, construímos uma nova matriz de conectividade, cuja metade superior, vetorizada, foi usada como entrada para uma MLP simples.
 
-### [2_time_series.ipynb](notebooks/2_time_series.ipynb)
-Esse notebook explora uma abordagem sem a matriz de conectividade - ao invés disso, são utilizadas as séries ROI como entrada. É esperado um desempenho pior, dado as hipóteses de conectividade. O desbalanceamento de classes no conjunto de treinamento é tratado com a técnica SMOTE (Synthetic Minority Over-sampling Technique), que cria amostras sintéticas da classe minoritária.
-Efetivamente, a Fully Convolutional Network treinada diretamente nas séries temporais das Regiões de Interesse não consegue aprender os padrões da doença de Parkinson.
+   * Aqui, também realizamos experimentos de classificação:
 
-### [3_gnn.ipynb](notebooks/3_gnn.ipynb)
-Para aumentar a acurácia na tarefa de classificação, é aplicado um modelo mais robusto para identificação de doenças através da conectividade, inspirado em estudos com dados similares em outras doenças ([ The Combination of a Graph Neural Network Technique and Brain Imaging to Diagnose Neurological Disorders: A Review and Outlook ](https://pubmed.ncbi.nlm.nih.gov/37891830/)). Para tanto, é construído um grafo esparso e eficiente da rede cerebral, mantendo apenas as conexões mais importantes, em um balanço entre custo e eficiência da rede. Os vértices são caracterizados utilizando a linha correspondente da matriz de correlação. O desbalanceamento é tratado no `DataLoader` usando um `WeightedRandomSampler`. GNNs são aplicadas para classificação. 
+     * Binária (Controles vs. Parkinson avançado)
+     * Multiclasse (Controles, Prodomal, Parkinson)
+     * Classificação em duas etapas (Controle vs. Doente; Prodomal vs. Parkinson)
+
+3. **Rede Cerebral (Grafos)**
+
+   * A partir da matriz de conectividade, geramos grafos representando o cérebro de cada paciente:
+
+     * **OMST (Orthogonal Minimum Spanning Tree):** gera uma árvore de custo mínimo.
+     * **Thresholding:** conecta regiões cujos coeficientes de correlação excedem um limiar.
+   * Extraímos características dos grafos (autovalores da Matriz Laplaciana) e classificamos com Graph Neural Networks (GNN), usando `WeightedRandomSampler` no `DataLoader` para balanceamento.
+
+4. **Multimodalidade**
+
+Para atender à demanda por multimodalidade no trabalho, optamos por realizar um stacking dos melhores modelos obtidos. A partir dos experimentos realizados, observamos que os melhores resultados para o problema de classificação em três classes foram alcançados utilizando, em conjunto, as matrizes de correlação e as séries temporais brutas em uma única etapa de treinamento (notebooks 1.1_3classes e 2.1_3classes).
+
+Assim, combinamos as previsões desses dois modelos por meio de um modelo simples de aprendizado de máquina, escolhemos a regressão logística pela sua simplicidade e bom desempenho.
+
+Os resultados indicam que o modelo multimodal não apresentou ganhos significativos em relação ao modelo baseado apenas nas matrizes de correlação (notebook 1.1_3classes). Em várias execuções, o desempenho do stacking foi frequentemente inferior ou, quando semelhante, replicava essencialmente a saída do modelo de correlação. Em poucas exceções, houve uma pequena melhora entre 1% e 3%, considerada irrelevante para o problema.
+
+Esses resultados sugerem que a forma como as regiões cerebrais se conectam, capturada pela matriz de correlação, é o aspecto mais importante para distinguir as classes.
+
+### Notebooks do projeto
+
+#### Matriz de conectividade
+
+* **1.0\_correlation\_matrix.ipynb**
+  Classifica utilizando somente 2 classes (Controles e Parkinson).
+
+* **1.1\_3classes.ipynb**
+  Classificação multiclasse (Controles, Prodomal, Parkinson).
+
+* **1.2\_2etapas.ipynb**
+  Adota a estratégia de classificação em duas etapas: primeiro Controles vs. Doentes (Prodomal + Parkinson), depois Prodomal vs. Parkinson, usando o mesmo vetor de conectividade.
+
+* **1.3\_catch22.ipynb**
+  Extraia características das séries BOLD com o Catch22 e depois extrai a matriz de conectividade dessas características que são
+  vetorizadas e passadas a uma MLP.
+
+* **1.4\_optuna.ipynb**
+  Realiza otimização de hiperparâmetros do MLP usando Optuna.
+
+#### Séries temporais
+
+* **2.0\_time\_series.ipynb**
+  Treina uma FCN 1D nas séries completas para classificação binária em 2 classes (Controle e Parkinson).
+
+* **2.1\_3classes.ipynb**
+  Ajusta o FCN para realizar classificação multiclasse (Controles, Prodomal, Parkinson).
+
+* **2.2\_2etapas.ipynb**
+  Executa o fluxo em duas etapas com FCN: Controle vs. Doente (Prodomal + Parkinson) e, depois, Prodomal vs. Parkinson.
+
+* **2.3\_catch22.ipynb**
+  Passa como entrada da FCN as características de cada uma das séries e não elas cruas a fim de verificar ganhos de desempenho.
+
+#### Rede cerebral
+
+* **3.0\_gnn.ipynb**
+  Gera grafos (via OMST e thresholding) e treina Graph Neural Networks para classificação.
+
+#### Multimodalidade
+
+* **4.0\_multimodal.ipynb**
+  Realiza o empilhamento (stacking) das previsões dos modelos baseados em séries temporais e matrizes de correlação para avaliar ganhos de performance com uma abordagem multimodal.
 
 ## Resultados
-### Matriz de Correlação
-| Acurácia | F1-Score | Precisão | Recall |
-|:--------:|----------|----------|--------|
-| 77,27%   | 71,75%   | 82,82%   | 77,27% |
 
-### FCN
-| Acurácia | F1-Score | Precisão | Recall |
-|:--------:|----------|----------|--------|
-| 56,82%   | 58,41%   | 61,33%   | 56,82% |
+### Séries Temporais
 
-### GCN
-| Acurácia | F1-Score | AUC    |
-|:--------:|----------|--------|
-| 38,64%   | 30,60%   | 59,55% |
+|  Métrica | FCN (CNN 1D) | Catch22 + Classificador |
+| :------: | :----------: | :---------------------: |
+| Acurácia |    ------    |            —            |
+| F1-Score |    ------    |            —            |
+| Precisão |    ------    |            —            |
+|  Recall  |    ------    |            —            |
 
-A abordagem proposta no notebook 1 apresentou o melhor desempenho. Isso sugere fortemente que a conectividade funcional dinâmica é a característica mais informativa para esta tarefa de classificação. Já a abordagem mais complexa e teoricamente avançada (Notebook 3) teve o pior desempenho.
+### Matriz de Conectividade
 
-| Característica | Notebook 1 (MLP) | Notebook 2 (FCN) | Notebook 3 (GNN) |
-| :--- | :--- | :--- | :--- |
-| **Abordagem** | Conectividade Funcional Dinâmica | Série Temporal Bruta | Estrutura de Grafo (Backbone) |
-| **Modelo** | MLP | FCN (CNN 1D) | GCN (Rede Neural de Grafo) |
-| **Complexidade** | Moderada | Moderada | Alta |
-| **Acurácia (Teste)** | **77,27%** | 56,82% | 38,64% |
-| **F1-Score (Teste)** | **71,75%** | 58,41% | 30,60% |
-| **Desempenho Geral** | **Bom** | Moderado | Fraco |
+|  Métrica |   MLP  |
+| :------: | :----: |
+| Acurácia | ------ |
+| F1-Score | ------ |
+| Precisão | ------ |
+|  Recall  | ------ |
 
-## Conclusão
-Todos os modelos sofreram com **overfitting**, evidenciado pela rapidez da acurácia de treinamento para alcançar 100% e pela rapidez da subida do erro de validação. Para lidar com isso, os modelos foram simplificados. Mesmo assim, o problema do overfitting persistiu. Assim, o modelo mais simples atingiu o melhor resultado. Futuramente, os notebooks serão adaptados com modelos mais robustos que capturem insights nos dados sem aumentar a complexidade de forma excessiva.
+### Rede Cerebral (GNN)
+
+|  Métrica |   GNN  |
+| :------: | :----: |
+| Acurácia | ------ |
+| F1-Score | ------ |
+| Precisão | ------ |
+|  Recall  | ------ |
